@@ -1,11 +1,11 @@
-import React, {Fragment} from "react";
+import React from "react";
 import {Editor} from "slate-react";
 import {Block, Value} from "slate";
 import { isKeyHotkey } from 'is-hotkey';
 import { Button, Icon, Toolbar } from './Components';
 import initialValue from './value.json';
-import isUrl from 'is-url';
-import imageExtensions from 'image-extensions';
+//import isUrl from 'is-url';
+//import imageExtensions from 'image-extensions';
 import styled from '@emotion/styled';
 
 /**
@@ -26,9 +26,9 @@ const Image = styled('img')`
  * @param {String} url
  * @return {Boolean}
  */
-function isImage(url) {
+/*function isImage(url) {
 	return !!imageExtensions.find(url.endsWith)
-}
+}*/
 
 /**
  * A change function to standardize inserting images.
@@ -102,7 +102,7 @@ class MailEditor extends React.Component{
 	@return {Boolean} */
 	hasMark = type => {
 		const { value } = this.state
-		return value.activeMarks.some(mark => mark.type == type)
+		return value.activeMarks.some(mark => mark.type === type)
 	}
 
 	/*Check if the any of the currently selected blocks are of `type`.
@@ -111,7 +111,7 @@ class MailEditor extends React.Component{
 	*/
 	hasBlock = type => {
 		const { value } = this.state
-		return value.blocks.some(node => node.type == type)
+		return value.blocks.some(node => node.type === type)
 	}
 
 
@@ -262,7 +262,7 @@ class MailEditor extends React.Component{
 	 * @param {Editor} editor
 	 */
 	onChange = ({value}) => {
-		if (value.document != this.state.value.document) {
+		if (value.document !== this.state.value.document) {
 			const content = JSON.stringify(value.toJSON())
 			localStorage.setItem('content', content)
 		}
@@ -321,7 +321,7 @@ class MailEditor extends React.Component{
 			const src = window.prompt('Enter the URL of the image:')
 			if (!src) return
 			editor.command(insertImage, src)
-		} else if (type != 'bulleted-list' && type != 'numbered-list') {
+		} else if (type !== 'bulleted-list' && type !== 'numbered-list') {
 			const isActive = this.hasBlock(type)
 			const isList = this.hasBlock('list-item')
 			if (isList) {
@@ -336,7 +336,7 @@ class MailEditor extends React.Component{
 			// Handle the extra wrapping required for list buttons.
 			const isList = this.hasBlock('list-item')
 			const isType = value.blocks.some(block => {
-				return !!document.getClosest(block.key, parent => parent.type == type)
+				return !!document.getClosest(block.key, parent => parent.type === type)
 			})
 
 			if (isList && isType) {
@@ -347,7 +347,7 @@ class MailEditor extends React.Component{
 			} else if (isList) {
 				editor
 					.unwrapBlock(
-						type == 'bulleted-list' ? 'numbered-list' : 'bulleted-list'
+						type === 'bulleted-list' ? 'numbered-list' : 'bulleted-list'
 					)
 					.wrapBlock(type)
 			} else {
