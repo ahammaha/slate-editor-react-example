@@ -1,0 +1,177 @@
+{
+   "object":"value",
+   "document":{
+      "object":"document",
+      "data":{
+
+      },
+      "nodes":[
+         {
+            "object":"block",
+            "type":"paragraph",
+            "data":{
+
+            },
+            "nodes":[
+               {
+                  "object":"text",
+                  "leaves":[
+                     {
+                        "object":"leaf",
+                        "text":"Dear ",
+                        "marks":[
+
+                        ]
+                     },
+                     {
+                        "object":"leaf",
+                        "text":"<Recipient>",
+                        "marks":[
+                           {
+                              "object":"mark",
+                              "type":"bold",
+                              "data":{
+
+                              }
+                           },
+                           {
+                              "object":"mark",
+                              "type":"italic",
+                              "data":{
+
+                              }
+                           }
+                        ]
+                     },
+                     {
+                        "object":"leaf",
+                        "text":",",
+                        "marks":[
+
+                        ]
+                     }
+                  ]
+               }
+            ]
+         },
+         {
+            "object":"block",
+            "type":"paragraph",
+            "data":{
+
+            },
+            "nodes":[
+               {
+                  "object":"text",
+                  "leaves":[
+                     {
+                        "object":"leaf",
+                        "text":"",
+                        "marks":[
+
+                        ]
+                     }
+                  ]
+               }
+            ]
+         },
+         {
+            "object":"block",
+            "type":"paragraph",
+            "data":{
+
+            },
+            "nodes":[
+               {
+                  "object":"text",
+                  "leaves":[
+                     {
+                        "object":"leaf",
+                        "text":"Please find the attached file.",
+                        "marks":[
+
+                        ]
+                     }
+                  ]
+               }
+            ]
+         },
+         {
+            "object":"block",
+            "type":"paragraph",
+            "data":{
+
+            },
+            "nodes":[
+               {
+                  "object":"text",
+                  "leaves":[
+                     {
+                        "object":"leaf",
+                        "text":"",
+                        "marks":[
+
+                        ]
+                     }
+                  ]
+               }
+            ]
+         },
+         {
+            "object":"block",
+            "type":"paragraph",
+            "data":{
+
+            },
+            "nodes":[
+               {
+                  "object":"text",
+                  "leaves":[
+                     {
+                        "object":"leaf",
+                        "text":"Regards,",
+                        "marks":[
+
+                        ]
+                     }
+                  ]
+               }
+            ]
+         },
+         {
+            "object":"block",
+            "type":"paragraph",
+            "data":{
+
+            },
+            "nodes":[
+               {
+                  "object":"text",
+                  "leaves":[
+                     {
+                        "object":"leaf",
+                        "text":"<Sender>",
+                        "marks":[
+                           {
+                              "object":"mark",
+                              "type":"bold",
+                              "data":{
+
+                              }
+                           },
+                           {
+                              "object":"mark",
+                              "type":"italic",
+                              "data":{
+
+                              }
+                           }
+                        ]
+                     }
+                  ]
+               }
+            ]
+         }
+      ]
+   }
+}

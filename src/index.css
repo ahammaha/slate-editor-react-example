@@ -1,0 +1,78 @@
+
+html {
+	height: 100%;
+}
+
+body {
+	min-height: 100vh;
+	margin: 0;
+	padding: 0;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+		Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+	background-color: rgb(240, 240, 240);
+}
+
+.App{
+	color:rgb(17,17,17);
+	max-width: 740px;
+	background-color: rgb(255, 255, 255);
+	padding: 40px;
+	margin: 65px auto 45px;
+}
+
+.emailAddr>input,.subjectDiv>input{
+	border: none transparent;
+	outline: none;
+	cursor: text;
+}
+
+.emailAddr>input{
+	padding: 10px;
+	width:90%;
+	height: 20px;
+	line-height: 20px;
+}
+
+.subjectDiv>input{
+	width: 100%;
+}
+
+.subjectDiv{
+	padding-top: 10px;
+	padding-bottom: 10px;
+	margin-bottom: 20px;
+	border-top: 2px solid #eee;
+	border-bottom: 2px solid #eee;
+}
+
+.emailAddr>span{
+	margin-right: 10px;
+	color:#8e8e8e;
+}
+
+/* toolbar */
+.css-548ii2 {
+    position: relative;
+    padding: 12px 18px 12px !important;
+    margin: 20px 0px 0px -20px !important;
+    box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.2);
+    border-bottom: 0px !important;
+}
+
+.css-14pl7gn{
+	color: #747474 !important;
+}
+
+.css-1gr0jds{
+	border-radius: 2px;
+	line-height: 20px;
+	background-color: rgba(32,33,36,0.122);
+}
+
+/*.css-548ii2 {
+    position: relative;
+    padding: 12px 18px 12px !important;
+    margin: 20px 0px 20px -20px !important;
+    border-top: 2px solid #eee;
+    border-bottom: 2px solid #eee;
+}*/
