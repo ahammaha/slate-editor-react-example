@@ -48,6 +48,13 @@ function insertImage(editor, src, target) {
   })
 }
 
+function insertFile(editor, src, target) {
+  editor.insertBlock({
+    type: 'file',
+    data: { src },
+  })
+}
+
 /**
  * The editor's schema.
  *
@@ -69,6 +76,9 @@ const schema = {
     image: {
       isVoid: true,
     },
+    file:{
+    	isVoid: true
+    }
   },
 }
 
@@ -154,6 +164,7 @@ class MailEditor extends React.Component{
 					{this.renderBlockButton('numbered-list', 'format_list_numbered')}
 					{this.renderBlockButton('bulleted-list', 'format_list_bulleted')}
 					{this.renderBlockButton('image', 'insert_photo')}
+					{this.renderBlockButton('file', 'attach_file')}
 				</Toolbar>
 			</div>
 		)
@@ -161,7 +172,6 @@ class MailEditor extends React.Component{
 
 	/**
 	 * Render a mark-toggling toolbar button.
-	 *
 	 * @param {String} type
 	 * @param {String} icon
 	 * @return {Element}
@@ -178,12 +188,10 @@ class MailEditor extends React.Component{
 
 	/**
 	 * Render a block-toggling toolbar button.
-	 *
 	 * @param {String} type
 	 * @param {String} icon
 	 * @return {Element}
 	 */
-
 	renderBlockButton = (type, icon) => {
 		let isActive = this.hasBlock(type)
 		if (['numbered-list', 'bulleted-list'].includes(type)) {
@@ -224,6 +232,10 @@ class MailEditor extends React.Component{
 			case 'image': 
 				const src = node.data.get('src')
 				return <Image src={src} selected={isFocused} {...attributes} />
+			case 'file':
+				let fileSrc = node.data.get('src')
+				let filename = fileSrc.substring(fileSrc.lastIndexOf('/')+1)
+				return <a readonly className="file-attachment" {...attributes} href={fileSrc}>{filename}</a>
 			default:
 				return next()
 		}
@@ -236,11 +248,7 @@ class MailEditor extends React.Component{
 	 * @return {Element}
 	 */
 	renderMark = (props, editor, next) => {
-		const {
-			children,
-			mark,
-			attributes
-		} = props
+		const {children,mark,attributes}=props
 
 		switch (mark.type) {
 			case 'bold':
@@ -317,7 +325,11 @@ class MailEditor extends React.Component{
 		const {document} = value
 
 		// Handle everything but list buttons.
-		if(type==="image"){
+		if(type==="file"){
+			const src = window.prompt('Enter the URL of the file:')
+			if (!src) return
+			editor.command(insertFile, src)
+		} else if(type==="image"){
 			const src = window.prompt('Enter the URL of the image:')
 			if (!src) return
 			editor.command(insertImage, src)
