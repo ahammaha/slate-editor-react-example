@@ -1,58 +1,33 @@
 import React from "react";
 import {Editor} from "slate-react";
-import {Block, Value} from "slate";
+import {Block, Value/*, Range, Point*/} from "slate";
 import { isKeyHotkey } from 'is-hotkey';
 import { Button, Icon, Toolbar } from './Components';
 import initialValue from './value.json';
-//import isUrl from 'is-url';
-//import imageExtensions from 'image-extensions';
 import styled from '@emotion/styled';
+import ReactDOM from 'react-dom'
 
-/**
- * A styled image block component.
- *
- * @type {Component}
- */
-const Image = styled('img')`
-  display: block;
-  max-width: 100%;
-  max-height: 20em;
-  box-shadow: ${props => (props.selected ? '0 0 0 2px blue;' : 'none')};
-`
-
-/*
- * A function to determine whether a URL has an image extension.
- *
- * @param {String} url
- * @return {Boolean}
- */
-/*function isImage(url) {
-	return !!imageExtensions.find(url.endsWith)
-}*/
-
-/**
- * A change function to standardize inserting images.
- *
- * @param {Editor} editor
- * @param {String} src
- * @param {Range} target
- */
-function insertImage(editor, src, target) {
-  if (target) {
-    editor.select(target)
-  }
-
-  editor.insertBlock({
-    type: 'image',
-    data: { src },
-  })
+const FileAttachment = (props) =>{
+	return(
+		<div className="file-attachment-div">
+			<a readOnly className="file-attachment" href={props.src}>
+				{props.filename}
+				<span className="grey-text"> ({props.fileSize})</span>
+				<span className="remove-attachment"></span>
+			</a>
+		</div>
+	)
 }
 
+
 function insertFile(editor, src, target) {
+  editor.moveFocusToEndOfDocument()
   editor.insertBlock({
     type: 'file',
     data: { src },
   })
+  console.log(editor)
+  console.log(editor.value.document.nodes.size)
 }
 
 /**
@@ -62,15 +37,7 @@ function insertFile(editor, src, target) {
  */
 const schema = {
   document: {
-    last: { type: 'paragraph' },
-    normalize: (editor, { code, node, child }) => {
-      switch (code) {
-        case 'last_child_type_invalid': {
-          const paragraph = Block.create('paragraph')
-          return editor.insertNodeByKey(node.key, node.nodes.size, paragraph)
-        }
-      }
-    },
+    
   },
   blocks: {
     image: {
@@ -104,7 +71,8 @@ const isCodeHotkey = isKeyHotkey('mod+`')
 
 class MailEditor extends React.Component{
 	state={
-		value:Value.fromJSON(initialValue)
+		value:Value.fromJSON(initialValue),
+		fileDetails:{src:"c://filename.txt",size:"30k"}
 	}
 
 	/* Check if the current selection has a mark with `type` in it.
@@ -163,7 +131,6 @@ class MailEditor extends React.Component{
 					{this.renderBlockButton('block-quote', 'format_quote')}
 					{this.renderBlockButton('numbered-list', 'format_list_numbered')}
 					{this.renderBlockButton('bulleted-list', 'format_list_bulleted')}
-					{this.renderBlockButton('image', 'insert_photo')}
 					{this.renderBlockButton('file', 'attach_file')}
 				</Toolbar>
 			</div>
@@ -204,8 +171,15 @@ class MailEditor extends React.Component{
 		return( 
 			<Button active={isActive}
 				onMouseDown={event => this.onClickBlock(event, type)}>
-				<Icon>{icon}</Icon></Button>
+				{type==='file' && <input id="fileInput" ref="fileInput" onChange={this.handleChange} type="file" style={{display:"none"}} />}
+				<Icon>{icon}</Icon>
+			</Button>
 		)
+	}
+
+	handleChange = (e) => {
+		let file = e.target.files
+		console.log(file);
 	}
 
 	/**
@@ -229,13 +203,11 @@ class MailEditor extends React.Component{
 				return <li { ...attributes}>{children}</li>
 			case 'numbered-list':
 				return <ol { ...attributes}>{children}</ol>
-			case 'image': 
-				const src = node.data.get('src')
-				return <Image src={src} selected={isFocused} {...attributes} />
 			case 'file':
 				let fileSrc = node.data.get('src')
 				let filename = fileSrc.substring(fileSrc.lastIndexOf('/')+1)
-				return <a readonly className="file-attachment" {...attributes} href={fileSrc}>{filename}</a>
+				let fileSize = this.state.fileDetails.size;
+				return <FileAttachment src={fileSrc} filename={filename} fileSize={fileSize} {...attributes}/>
 			default:
 				return next()
 		}
@@ -326,13 +298,10 @@ class MailEditor extends React.Component{
 
 		// Handle everything but list buttons.
 		if(type==="file"){
-			const src = window.prompt('Enter the URL of the file:')
+			ReactDOM.findDOMNode(this.refs.fileInput).click()
+			const src = this.state.fileDetails.src
 			if (!src) return
 			editor.command(insertFile, src)
-		} else if(type==="image"){
-			const src = window.prompt('Enter the URL of the image:')
-			if (!src) return
-			editor.command(insertImage, src)
 		} else if (type !== 'bulleted-list' && type !== 'numbered-list') {
 			const isActive = this.hasBlock(type)
 			const isList = this.hasBlock('list-item')
