@@ -13,7 +13,7 @@ const FileAttachment = (props) =>{
 			<a readOnly className="file-attachment" href={props.src}>
 				{props.filename}
 				<span className="grey-text"> ({props.fileSize})</span>
-				<span className="remove-attachment"></span>
+				<span className="remove-attachment" onClick={()=>props.removeAttachment(props.nodeKey)}></span>
 			</a>
 		</div>
 	)
@@ -190,6 +190,7 @@ class MailEditor extends React.Component{
 				editor.command(insertFile, this.state.fileDetails.src,this.state.fileDetails.name,this.state.fileDetails.size)
 			}
 		);
+		//this.setState({fileDetails:{src:"",size:"",name:""}})
 	}
 
 	/**
@@ -217,10 +218,15 @@ class MailEditor extends React.Component{
 				let fileSrc = node.data.get('src')
 				let filename = node.data.get('name')
 				let fileSize = node.data.get('size')
-				return <FileAttachment src={fileSrc} filename={filename} fileSize={fileSize} {...attributes}/>
+				return <FileAttachment removeAttachment={this.removeAttachment} nodeKey={node.key} src={fileSrc} filename={filename} fileSize={fileSize} {...attributes}/>
 			default:
 				return next()
 		}
+	}
+
+	removeAttachment = (nodeKey) =>{
+		const {editor}=this
+		editor.removeNodeByKey(nodeKey)
 	}
 
 	/**
