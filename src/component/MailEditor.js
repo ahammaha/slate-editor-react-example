@@ -20,14 +20,12 @@ const FileAttachment = (props) =>{
 }
 
 
-function insertFile(editor, src, target) {
+function insertFile(editor, src, name, size, target) {
   editor.moveFocusToEndOfDocument()
   editor.insertBlock({
     type: 'file',
-    data: { src },
+    data: { src ,name, size},
   })
-  console.log(editor)
-  console.log(editor.value.document.nodes.size)
 }
 
 /**
@@ -72,7 +70,7 @@ const isCodeHotkey = isKeyHotkey('mod+`')
 class MailEditor extends React.Component{
 	state={
 		value:Value.fromJSON(initialValue),
-		fileDetails:{src:"c://filename.txt",size:"30k"}
+		fileDetails:{src:"",size:"",name:""}
 	}
 
 	/* Check if the current selection has a mark with `type` in it.
@@ -131,8 +129,13 @@ class MailEditor extends React.Component{
 					{this.renderBlockButton('block-quote', 'format_quote')}
 					{this.renderBlockButton('numbered-list', 'format_list_numbered')}
 					{this.renderBlockButton('bulleted-list', 'format_list_bulleted')}
-					{this.renderBlockButton('file', 'attach_file')}
 				</Toolbar>
+				<div className="footerDiv">
+					<button className="sendButton" type="button">Send</button>
+					<div className="fileAttachmentDiv">
+						{this.renderBlockButton('file', 'attach_file')}
+					</div>
+				</div>
 			</div>
 		)
 	}
@@ -171,15 +174,22 @@ class MailEditor extends React.Component{
 		return( 
 			<Button active={isActive}
 				onMouseDown={event => this.onClickBlock(event, type)}>
-				{type==='file' && <input id="fileInput" ref="fileInput" onChange={this.handleChange} type="file" style={{display:"none"}} />}
+				{type==='file' && <input id="fileInput" ref="fileInput" onChange={(e)=>this.handleChange(e)} type="file" style={{display:"none"}} />}
 				<Icon>{icon}</Icon>
 			</Button>
 		)
 	}
 
 	handleChange = (e) => {
-		let file = e.target.files
-		console.log(file);
+		const {editor}=this
+		let file = e.target.files[0];
+		let fileSrc=e.target.value;
+		this.setState(
+			{fileDetails: {src:fileSrc,size:file.size,name:file.name}},
+			() => {
+				editor.command(insertFile, this.state.fileDetails.src,this.state.fileDetails.name,this.state.fileDetails.size)
+			}
+		);
 	}
 
 	/**
@@ -205,8 +215,8 @@ class MailEditor extends React.Component{
 				return <ol { ...attributes}>{children}</ol>
 			case 'file':
 				let fileSrc = node.data.get('src')
-				let filename = fileSrc.substring(fileSrc.lastIndexOf('/')+1)
-				let fileSize = this.state.fileDetails.size;
+				let filename = node.data.get('name')
+				let fileSize = node.data.get('size')
 				return <FileAttachment src={fileSrc} filename={filename} fileSize={fileSize} {...attributes}/>
 			default:
 				return next()
@@ -296,12 +306,11 @@ class MailEditor extends React.Component{
 		const {value} = editor
 		const {document} = value
 
-		// Handle everything but list buttons.
 		if(type==="file"){
 			ReactDOM.findDOMNode(this.refs.fileInput).click()
-			const src = this.state.fileDetails.src
+			/*const src = this.state.fileDetails.src
 			if (!src) return
-			editor.command(insertFile, src)
+			editor.command(insertFile, src)*/
 		} else if (type !== 'bulleted-list' && type !== 'numbered-list') {
 			const isActive = this.hasBlock(type)
 			const isList = this.hasBlock('list-item')

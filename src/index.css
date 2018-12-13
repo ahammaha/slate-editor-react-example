@@ -15,7 +15,7 @@ body {
 	color:rgb(17,17,17);
 	max-width: 740px;
 	background-color: rgb(255, 255, 255);
-	padding: 40px;
+	padding: 20px;
 	margin: 65px auto 45px;
 }
 
@@ -53,7 +53,7 @@ body {
 .css-548ii2 {
     position: relative;
     padding: 12px 18px 12px !important;
-    margin: 20px 0px 0px -20px !important;
+    margin: 20px 0px 0px 0px !important;
     box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.2);
     border-bottom: 0px !important;
 }
@@ -103,3 +103,35 @@ body {
 /*.file-attachment-div:active{
 	background-color: #e4e4e5
 }*/
+
+.sendButton{
+	box-shadow: 0 1px 2px 0 rgba(26,115,232,0.451), 0 1px 3px 1px rgba(26,115,232,0.302);
+    display: inline-block;
+    cursor: pointer;
+    max-width: 104px;
+    min-width: 72px;
+    font-size: .875rem;
+    border-radius: 4px;
+    font-weight: 550;
+    letter-spacing:0.25px;
+    height: 36px;
+    padding: 0 16px;
+    background-color: #1a73e8;
+    color: #fff;
+    border: none;
+}
+
+.sendButton:hover{
+	box-shadow: 0 1px 2px 0 rgba(26,115,232,0,451), 0 1px 3px 1px rgba(26,115,232,0,302);
+	background-color: #297be6;
+	border: none;
+}
+
+.fileAttachmentDiv{
+	display: inline-block;
+	padding: 1px 18px 17px;
+}
+
+.footerDiv{
+	margin-top: 20px;
+}
