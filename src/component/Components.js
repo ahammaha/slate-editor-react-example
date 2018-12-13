@@ -6,7 +6,7 @@ export const Button = styled('span')`
   color: ${props =>
     props.reversed
       ? props.active ? 'white' : '#aaa'
-      : props.active ? 'black' : '#ccc'};
+      : props.active ? 'black' : '#747474'};
 `
 
 export const Icon = styled(({ className, ...rest }) => {
@@ -28,8 +28,8 @@ export const Menu = styled('div')`
 
 export const Toolbar = styled(Menu)`
   position: relative;
-  padding: 1px 18px 17px;
-  margin: 0 -20px;
-  border-bottom: 2px solid #eee;
-  margin-bottom: 20px;
+  padding: 12px 18px 12px;
+  margin: 20px 0px 0px 0px;
+  box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.2);
+  width:500px;
 `

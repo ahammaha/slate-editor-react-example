@@ -1,10 +1,9 @@
 import React from "react";
 import {Editor} from "slate-react";
-import {Block, Value/*, Range, Point*/} from "slate";
+import {Value} from "slate";
 import { isKeyHotkey } from 'is-hotkey';
 import { Button, Icon, Toolbar } from './Components';
 import initialValue from './value.json';
-import styled from '@emotion/styled';
 import ReactDOM from 'react-dom'
 
 const FileAttachment = (props) =>{
@@ -70,7 +69,8 @@ const isCodeHotkey = isKeyHotkey('mod+`')
 class MailEditor extends React.Component{
 	state={
 		value:Value.fromJSON(initialValue),
-		fileDetails:{src:"",size:"",name:""}
+		fileDetails:{src:"",size:"",name:""},
+		showFontSizeMenu:false
 	}
 
 	/* Check if the current selection has a mark with `type` in it.
@@ -119,13 +119,28 @@ class MailEditor extends React.Component{
 					renderMark={this.renderMark}
 					schema={schema}
 				/>
+				{this.state.showFontSizeMenu && 
+					<div className="font-size-list">
+						<div className={"font-size-list-item "+(this.hasBlock("small-size")?"active-font-size":"")} onMouseDown={event => this.onClickBlock(event, "small-size")}>
+							Small
+						</div>
+						<div className={"font-size-list-item "+(this.hasBlock("normal-size")?"active-font-size":"")} onMouseDown={event => this.onClickBlock(event, "normal-size")}>
+							Normal
+						</div>
+						<div className={"font-size-list-item "+(this.hasBlock("large-size")?"active-font-size":"")} onMouseDown={event => this.onClickBlock(event, "large-size")}>
+							
+							Large
+						</div>
+					</div>
+				}
 				<Toolbar>
+					{this.renderBlockButton('font-size', 'format_size')}
 					{this.renderMarkButton('bold', 'format_bold')}
 					{this.renderMarkButton('italic', 'format_italic')}
 					{this.renderMarkButton('underlined', 'format_underlined')}
 					{this.renderMarkButton('code', 'code')}
-					{this.renderBlockButton('heading-one', 'looks_one')}
-					{this.renderBlockButton('heading-two', 'looks_two')}
+					{/*this.renderBlockButton('heading-one', 'looks_one')}
+					{this.renderBlockButton('heading-two', 'looks_two')*/}
 					{this.renderBlockButton('block-quote', 'format_quote')}
 					{this.renderBlockButton('numbered-list', 'format_list_numbered')}
 					{this.renderBlockButton('bulleted-list', 'format_list_bulleted')}
@@ -176,6 +191,7 @@ class MailEditor extends React.Component{
 				onMouseDown={event => this.onClickBlock(event, type)}>
 				{type==='file' && <input id="fileInput" ref="fileInput" onChange={(e)=>this.handleChange(e)} type="file" style={{display:"none"}} />}
 				<Icon>{icon}</Icon>
+				{type==='font-size' && <Icon>arrow_drop_down</Icon>}
 			</Button>
 		)
 	}
@@ -190,7 +206,6 @@ class MailEditor extends React.Component{
 				editor.command(insertFile, this.state.fileDetails.src,this.state.fileDetails.name,this.state.fileDetails.size)
 			}
 		);
-		//this.setState({fileDetails:{src:"",size:"",name:""}})
 	}
 
 	/**
@@ -206,10 +221,12 @@ class MailEditor extends React.Component{
 				return <blockquote { ...attributes} >{children}</blockquote>
 			case 'bulleted-list':
 				return <ul { ...attributes}>{children}</ul>
-			case 'heading-one':
-				return <h1 { ...attributes}>{children}</h1>
-			case 'heading-two':
-				return <h2 { ...attributes}>{children}</h2>
+			case 'large-size':
+				return <p style={{fontSize:"large"}} { ...attributes}>{children}</p>
+			case 'normal-size':
+				return <p style={{fontSize:"medium"}} { ...attributes}>{children}</p>
+			case 'small-size':
+				return <p style={{fontSize:"small"}} { ...attributes}>{children}</p>
 			case 'list-item':
 				return <li { ...attributes}>{children}</li>
 			case 'numbered-list':
@@ -218,7 +235,7 @@ class MailEditor extends React.Component{
 				let fileSrc = node.data.get('src')
 				let filename = node.data.get('name')
 				let fileSize = node.data.get('size')
-				return <FileAttachment removeAttachment={this.removeAttachment} nodeKey={node.key} src={fileSrc} filename={filename} fileSize={fileSize} {...attributes}/>
+				return <FileAttachment active={isFocused} removeAttachment={this.removeAttachment} nodeKey={node.key} src={fileSrc} filename={filename} fileSize={fileSize} {...attributes}/>
 			default:
 				return next()
 		}
@@ -314,10 +331,9 @@ class MailEditor extends React.Component{
 
 		if(type==="file"){
 			ReactDOM.findDOMNode(this.refs.fileInput).click()
-			/*const src = this.state.fileDetails.src
-			if (!src) return
-			editor.command(insertFile, src)*/
-		} else if (type !== 'bulleted-list' && type !== 'numbered-list') {
+		} else if(type==='font-size') {
+			this.setState(prevState => ({showFontSizeMenu: !prevState.showFontSizeMenu}))
+		}else if (type !== 'bulleted-list' && type !== 'numbered-list') {
 			const isActive = this.hasBlock(type)
 			const isList = this.hasBlock('list-item')
 			if (isList) {

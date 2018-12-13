@@ -50,17 +50,17 @@ body {
 }
 
 /* toolbar */
-.css-548ii2 {
+/*.css-548ii2 {
     position: relative;
     padding: 12px 18px 12px !important;
     margin: 20px 0px 0px 0px !important;
     box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.2);
     border-bottom: 0px !important;
-}
+}*/
 
-.css-14pl7gn{
+/*.css-14pl7gn{
 	color: #747474 !important;
-}
+}*/
 
 .css-1gr0jds{
 	border-radius: 2px;
@@ -134,4 +134,40 @@ body {
 
 .footerDiv{
 	margin-top: 20px;
+}
+
+.dropdownArrow{
+	background: url(//ssl.gstatic.com/ui/v1/disclosure/small-grey-disclosure-arrow-down.png) center no-repeat;
+    float: right;
+    padding: 0;
+    vertical-align: middle;
+}
+
+.font-size-list{
+	display: block;
+	position: absolute;
+  	background-color: #fff;
+  	min-width: 100px;
+  	box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.2);
+  	z-index: 10;
+  	padding: 10px 0px 10px 0px;
+  	margin-top: -100px;
+}
+
+.font-size-list-item{
+	cursor: pointer;
+	padding: 6px 30px 6px 30px;
+}
+
+.font-size-list-item:hover{
+	background-color: #eee;
+	cursor: pointer;
+}
+
+.active-font-size:before{
+	font-family: 'Material Icons';
+    content: "check";
+    margin-left: -25px;
+    margin-right: 5px;
+    font-size: 18px;
 }
