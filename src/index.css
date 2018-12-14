@@ -72,6 +72,10 @@ body {
 	text-decoration: none;
 }
 
+.file-attachment:hover{
+	text-decoration: none;
+}
+
 .file-attachment-div{
 	font-size: .875rem;
 	display: block;
@@ -170,4 +174,17 @@ body {
     margin-left: -25px;
     margin-right: 5px;
     font-size: 18px;
+}
+
+.font-size-dropdown,.font-size-dropdown:hover{
+	padding: 0px !important;
+	border: none;
+	color: #747474 !important;
+	background-color: #fff !important;
+	box-shadow: none !important;
+	-webkit-box-shadow:none !important;
+}
+
+.font-size-dropdown>.dropdown-menu{
+	box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.2);
 }

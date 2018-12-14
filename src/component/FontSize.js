@@ -5,10 +5,22 @@ import  {Icon} from "./Components";
 class FontSize extends React.Component{
 	render(){
 		return(
-			<DropdownButton eventKey={1} title={<Icon>{this.props.icon}</Icon>}>
-				<MenuItem eventKey='1'><i className="fa fa-envelope fa-fw"></i> User Profile</MenuItem>
-				<MenuItem eventKey='2'><i className="fa fa-gear fa-fw"></i> Settings</MenuItem>
-				<MenuItem eventKey='3'><i className="fa fa-sign-out fa-fw"></i> Logout</MenuItem>
+			<DropdownButton className="font-size-dropdown" dropup id="font-size-dropdown" title={<Icon>{this.props.icon}</Icon>}>
+				<MenuItem className={this.props.hasBlock("small-size")?"active":""}
+					eventKey='1' 
+					onMouseDown={event => (this.props.onClickBlock(event, "small-size"))}>
+					Small
+				</MenuItem>
+				<MenuItem className={this.props.hasBlock("normal-size")?"active":""}
+					eventKey='1' 
+					onMouseDown={event => (this.props.onClickBlock(event, "normal-size"))}>
+					Normal
+				</MenuItem>
+				<MenuItem className={this.props.hasBlock("large-size")?"active":""}
+					eventKey='1' 
+					onMouseDown={event => (this.props.onClickBlock(event, "large-size"))}>
+					Large
+				</MenuItem>
 			</DropdownButton>
 		)
 	}

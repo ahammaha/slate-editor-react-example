@@ -7,6 +7,7 @@ import initialValue from './value.json';
 import ReactDOM from 'react-dom';
 import isUrl from 'is-url'
 import FileAttachment from "./FileAttachment";
+import FontSize from "./FontSize";
 
 /**
  * A change helper to standardize wrapping links.
@@ -70,8 +71,7 @@ const isCodeHotkey = isKeyHotkey('mod+`')
 class MailEditor extends React.Component{
 	state={
 		value:Value.fromJSON(initialValue),
-		fileDetails:[],
-		showFontSizeMenu:false
+		fileDetails:[]
 	}
 
 	/**
@@ -140,19 +140,6 @@ class MailEditor extends React.Component{
 										fileSize={fileDetail.size} />					
 					)}
 				</div>
-				{this.state.showFontSizeMenu && 
-					<div className="font-size-list">
-						<div className={"font-size-list-item "+(this.hasBlock("small-size")?"active-font-size":"")} onMouseDown={event => this.onClickBlock(event, "small-size")}>
-							Small
-						</div>
-						<div className={"font-size-list-item "+(this.hasBlock("normal-size")?"active-font-size":"")} onMouseDown={event => this.onClickBlock(event, "normal-size")}>
-							Normal
-						</div>
-						<div className={"font-size-list-item "+(this.hasBlock("large-size")?"active-font-size":"")} onMouseDown={event => this.onClickBlock(event, "large-size")}>
-							Large
-						</div>
-					</div>
-				}
 				<Toolbar>
 					{this.renderBlockButton('font-size', 'format_size')}
 					{this.renderMarkButton('bold', 'format_bold')}
@@ -209,9 +196,9 @@ class MailEditor extends React.Component{
 		return( 
 			<Button active={isActive}
 				onMouseDown={event => this.onClickBlock(event, type)}>
+				{type==="font-size" && <FontSize hasBlock={this.hasBlock} onClickBlock={this.onClickBlock} icon={icon} />}
 				{type==='file' && <input id="fileInput" ref="fileInput" onChange={(e)=>this.addFile(e)} type="file" style={{display:"none"}} />}
-				<Icon>{icon}</Icon>
-				{type==='font-size' && <Icon>arrow_drop_down</Icon>}
+				{type!=="font-size" && <Icon>{icon}</Icon>}
 			</Button>
 		)
 	}
@@ -237,11 +224,11 @@ class MailEditor extends React.Component{
 			case 'bulleted-list':
 				return <ul { ...attributes}>{children}</ul>
 			case 'large-size':
-				return <span style={{fontSize:"large"}} { ...attributes}>{children}</span>
+				return <p style={{fontSize:"large"}} { ...attributes}>{children}</p>
 			case 'normal-size':
-				return <span style={{fontSize:"medium"}} { ...attributes}>{children}</span>
+				return <p style={{fontSize:"medium"}} { ...attributes}>{children}</p>
 			case 'small-size':
-				return <span style={{fontSize:"small"}} { ...attributes}>{children}</span>
+				return <p style={{fontSize:"small"}} { ...attributes}>{children}</p>
 			case 'list-item':
 				return <li { ...attributes}>{children}</li>
 			case 'numbered-list':
@@ -339,6 +326,7 @@ class MailEditor extends React.Component{
 	 * @param {String} type
 	 */
 	onClickBlock = (event, type) => {
+
 		event.preventDefault();
 		const {editor}=this
 		const {value} = editor
@@ -346,8 +334,8 @@ class MailEditor extends React.Component{
 
 		if(type==="file"){
 			ReactDOM.findDOMNode(this.refs.fileInput).click()
-		} else if(type==='font-size') {
-			this.setState(prevState => ({showFontSizeMenu: !prevState.showFontSizeMenu}))
+		} else if(type==="font-size"){
+			//does nothing
 		} else if(type==='link'){
 			const hasLinks = this.hasLinks()
 			if (hasLinks) {
