@@ -1,35 +1,36 @@
 import React from "react";
-import {Editor} from "slate-react";
+import {Editor,getEventTransfer} from "slate-react";
 import {Value} from "slate";
 import { isKeyHotkey } from 'is-hotkey';
 import { Button, Icon, Toolbar } from './Components';
 import initialValue from './value.json';
-import ReactDOM from 'react-dom'
+import ReactDOM from 'react-dom';
+import isUrl from 'is-url'
+import FileAttachment from "./FileAttachment";
 
-const FileAttachment = (props) =>{
-	return(
-		<div className="file-attachment-div">
-			<a readOnly className="file-attachment" href={props.src}>
-				{props.filename}
-				<span className="grey-text"> ({props.fileSize})</span>
-				<span className="remove-attachment" onClick={()=>props.removeAttachment(props.nodeKey)}></span>
-			</a>
-		</div>
-	)
+/**
+ * A change helper to standardize wrapping links.
+ * @param {Editor} editor
+ * @param {String} href
+ */
+function wrapLink(editor, href) {
+	editor.wrapInline({
+		type: 'link',
+		data: { href },
+	})
+	editor.moveToEnd()
 }
 
-
-function insertFile(editor, src, name, size, target) {
-  editor.moveFocusToEndOfDocument()
-  editor.insertBlock({
-    type: 'file',
-    data: { src ,name, size},
-  })
+/**
+ * A change helper to standardize unwrapping links.
+ * @param {Editor} editor
+ */
+function unwrapLink(editor) {
+	editor.unwrapInline('link')
 }
 
 /**
  * The editor's schema.
- *
  * @type {Object}
  */
 const schema = {
@@ -69,8 +70,18 @@ const isCodeHotkey = isKeyHotkey('mod+`')
 class MailEditor extends React.Component{
 	state={
 		value:Value.fromJSON(initialValue),
-		fileDetails:{src:"",size:"",name:""},
+		fileDetails:[],
 		showFontSizeMenu:false
+	}
+
+	/**
+	* Check whether the current selection has a link in it.
+	* @return {Boolean} hasLinks
+	*/
+
+	hasLinks = () => {
+		const { value } = this.state
+		return value.inlines.some(inline => inline.type === 'link')
 	}
 
 	/* Check if the current selection has a mark with `type` in it.
@@ -113,12 +124,22 @@ class MailEditor extends React.Component{
 					autoFocus
 					ref={this.ref}
 					value={this.state.value}
+					onPaste={this.onPaste}
 					onChange={this.onChange}
 					onKeyDown={this.onKeyDown}
 					renderNode={this.renderNode}
 					renderMark={this.renderMark}
 					schema={schema}
 				/>
+				<div>
+					{this.state.fileDetails.map(
+						(fileDetail,index)=> <FileAttachment key={fileDetail.name+"_"+index}
+										removeAttachment={this.removeAttachment} 
+										src={fileDetail.src} 
+										filename={fileDetail.name} 
+										fileSize={fileDetail.size} />					
+					)}
+				</div>
 				{this.state.showFontSizeMenu && 
 					<div className="font-size-list">
 						<div className={"font-size-list-item "+(this.hasBlock("small-size")?"active-font-size":"")} onMouseDown={event => this.onClickBlock(event, "small-size")}>
@@ -128,7 +149,6 @@ class MailEditor extends React.Component{
 							Normal
 						</div>
 						<div className={"font-size-list-item "+(this.hasBlock("large-size")?"active-font-size":"")} onMouseDown={event => this.onClickBlock(event, "large-size")}>
-							
 							Large
 						</div>
 					</div>
@@ -139,17 +159,17 @@ class MailEditor extends React.Component{
 					{this.renderMarkButton('italic', 'format_italic')}
 					{this.renderMarkButton('underlined', 'format_underlined')}
 					{this.renderMarkButton('code', 'code')}
-					{/*this.renderBlockButton('heading-one', 'looks_one')}
-					{this.renderBlockButton('heading-two', 'looks_two')*/}
 					{this.renderBlockButton('block-quote', 'format_quote')}
 					{this.renderBlockButton('numbered-list', 'format_list_numbered')}
 					{this.renderBlockButton('bulleted-list', 'format_list_bulleted')}
+					{this.renderBlockButton('link', 'link')}
 				</Toolbar>
 				<div className="footerDiv">
 					<button className="sendButton" type="button">Send</button>
 					<div className="fileAttachmentDiv">
 						{this.renderBlockButton('file', 'attach_file')}
 					</div>
+
 				</div>
 			</div>
 		)
@@ -189,25 +209,20 @@ class MailEditor extends React.Component{
 		return( 
 			<Button active={isActive}
 				onMouseDown={event => this.onClickBlock(event, type)}>
-				{type==='file' && <input id="fileInput" ref="fileInput" onChange={(e)=>this.handleChange(e)} type="file" style={{display:"none"}} />}
+				{type==='file' && <input id="fileInput" ref="fileInput" onChange={(e)=>this.addFile(e)} type="file" style={{display:"none"}} />}
 				<Icon>{icon}</Icon>
 				{type==='font-size' && <Icon>arrow_drop_down</Icon>}
 			</Button>
 		)
 	}
 
-	handleChange = (e) => {
-		const {editor}=this
+	addFile = (e) => {
 		let file = e.target.files[0];
 		let fileSrc=e.target.value;
 		this.setState(
-			{fileDetails: {src:fileSrc,size:file.size,name:file.name}},
-			() => {
-				editor.command(insertFile, this.state.fileDetails.src,this.state.fileDetails.name,this.state.fileDetails.size)
-			}
+			{fileDetails: [...this.state.fileDetails,{src:fileSrc,size:file.size,name:file.name}]}
 		);
 	}
-
 	/**
 	 * Render a Slate node.
 	 *
@@ -215,35 +230,36 @@ class MailEditor extends React.Component{
 	 * @return {Element}
 	 */
 	renderNode = (props, editor, next) => {
-		const {attributes,children,node,isFocused}=props
+		const {attributes,children,node}=props
 		switch (node.type) {
 			case 'block-quote':
 				return <blockquote { ...attributes} >{children}</blockquote>
 			case 'bulleted-list':
 				return <ul { ...attributes}>{children}</ul>
 			case 'large-size':
-				return <p style={{fontSize:"large"}} { ...attributes}>{children}</p>
+				return <span style={{fontSize:"large"}} { ...attributes}>{children}</span>
 			case 'normal-size':
-				return <p style={{fontSize:"medium"}} { ...attributes}>{children}</p>
+				return <span style={{fontSize:"medium"}} { ...attributes}>{children}</span>
 			case 'small-size':
-				return <p style={{fontSize:"small"}} { ...attributes}>{children}</p>
+				return <span style={{fontSize:"small"}} { ...attributes}>{children}</span>
 			case 'list-item':
 				return <li { ...attributes}>{children}</li>
 			case 'numbered-list':
 				return <ol { ...attributes}>{children}</ol>
-			case 'file':
-				let fileSrc = node.data.get('src')
-				let filename = node.data.get('name')
-				let fileSize = node.data.get('size')
-				return <FileAttachment active={isFocused} removeAttachment={this.removeAttachment} nodeKey={node.key} src={fileSrc} filename={filename} fileSize={fileSize} {...attributes}/>
+			case 'link': {
+				const { data } = node
+				const href = data.get('href')
+				return <a {...attributes} href={href}>{children}</a>
+			}
 			default:
 				return next()
 		}
 	}
 
-	removeAttachment = (nodeKey) =>{
-		const {editor}=this
-		editor.removeNodeByKey(nodeKey)
+	removeAttachment = (src) =>{
+		this.setState(prevState => ({
+			fileDetails: prevState.fileDetails.filter(fileDetail => fileDetail.src !== src )
+		}));
 	}
 
 	/**
@@ -319,7 +335,6 @@ class MailEditor extends React.Component{
 
 	/**
 	 * When a block button is clicked, toggle the block type.
-	 *
 	 * @param {Event} event
 	 * @param {String} type
 	 */
@@ -333,7 +348,31 @@ class MailEditor extends React.Component{
 			ReactDOM.findDOMNode(this.refs.fileInput).click()
 		} else if(type==='font-size') {
 			this.setState(prevState => ({showFontSizeMenu: !prevState.showFontSizeMenu}))
-		}else if (type !== 'bulleted-list' && type !== 'numbered-list') {
+		} else if(type==='link'){
+			const hasLinks = this.hasLinks()
+			if (hasLinks) {
+				editor.command(unwrapLink)
+			} else if (value.selection.isExpanded) {
+				const href = window.prompt('Enter the URL of the link:')
+				if (href === null) {
+					return
+				}
+				editor.command(wrapLink, href)
+			} else {
+				const href = window.prompt('Enter the URL of the link:')
+				if (href === null) {
+					return
+				}
+				const text = window.prompt('Enter the text for the link:')
+				if (text === null) {
+					return
+				}
+				editor
+					.insertText(text)
+					.moveFocusBackward(text.length)
+					.command(wrapLink, href)
+			}
+		} else if (type !== 'bulleted-list' && type !== 'numbered-list') {
 			const isActive = this.hasBlock(type)
 			const isList = this.hasBlock('list-item')
 			if (isList) {
@@ -366,6 +405,24 @@ class MailEditor extends React.Component{
 				editor.setBlocks('list-item').wrapBlock(type)
 			}
 		}
+	}
+
+	/**
+	* On paste, if the text is a link, wrap the selection in a link.
+	* @param {Event} event
+	* @param {Editor} editor
+	* @param {Function} next
+	*/
+	onPaste = (event, editor, next) => {
+		if (editor.value.selection.isCollapsed) return next()
+		const transfer = getEventTransfer(event)
+		const { type, text } = transfer
+		if (type !== 'text' && type !== 'html') return next()
+		if (!isUrl(text)) return next()
+		if (this.hasLinks()) {
+			editor.command(unwrapLink)
+		}
+		editor.command(wrapLink, text)
 	}
 }
 
