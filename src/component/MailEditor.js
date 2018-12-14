@@ -74,7 +74,7 @@ class MailEditor extends React.Component{
 		value:Value.fromJSON(initialValue),
 		fileDetails:[],
 		isLinkModalOpen:false,
-		linkDetails:{text:"",url:""}
+		linkDetails:{text:"",url:"",isSelectedText:false}
 	}
 
 	/**
@@ -161,7 +161,7 @@ class MailEditor extends React.Component{
 						{this.renderBlockButton('file', 'attach_file')}
 					</div>
 				</div>
-				<LinkModal
+				<LinkModal 
 					linkDetails={this.state.linkDetails}
 					linkContentChange={this.linkContentChange}
 					toggleLinkModal={this.toggleLinkModal} 
@@ -173,19 +173,26 @@ class MailEditor extends React.Component{
 
 	addLink = (e) =>{
 		this.toggleLinkModal()
-		const href = this.state.linkDetails.url
-		if (href === null) {
-			return
-		}
-		const text = this.state.linkDetails.text
-		if (text === null) {
-			return
-		}
 		const {editor}=this
-		this.setState({},()=>{editor
-			.insertText(text)
-			.moveFocusBackward(text.length)
-			.command(wrapLink, href)})
+		const href = this.state.linkDetails.url.trim()
+		if (href === null || href.length===0) {
+			this.setState({linkDetails:{url:"",text:"",isSelectedText:false}})
+			return
+		}
+		if(this.state.linkDetails.isSelectedText){
+			this.setState({linkDetails:{url:"",text:"",isSelectedText:false}},
+				()=>{editor.command(wrapLink, href)})
+		}else{
+			const text = this.state.linkDetails.text.trim()
+			if (text === null || text.length===0) {
+				this.setState({linkDetails:{url:"",text:"",isSelectedText:false}})
+				return
+			}
+			this.setState({linkDetails:{url:"",text:"",isSelectedText:false}},()=>{editor
+				.insertText(text)
+				.moveFocusBackward(text.length)
+				.command(wrapLink, href)})
+		}
 	}
 
 	linkContentChange=(e,field)=>{
@@ -266,7 +273,7 @@ class MailEditor extends React.Component{
 			case 'link': {
 				const { data } = node
 				const href = data.get('href')
-				return <a {...attributes} href={href}>{children}</a>
+				return <a className="textLink" {...attributes} href={href}>{children}</a>
 			}
 			default:
 				return next()
@@ -379,11 +386,8 @@ class MailEditor extends React.Component{
 			if (hasLinks) {
 				editor.command(unwrapLink)
 			} else if (value.selection.isExpanded) {
-				const href = window.prompt('Enter the URL of the link:')
-				if (href === null) {
-					return
-				}
-				editor.command(wrapLink, href)
+				this.setState({linkDetails:{...this.state.linkDetails,isSelectedText:true}})
+				this.toggleLinkModal()
 			} else {
 				this.toggleLinkModal()
 			}

@@ -12,10 +12,12 @@ const LinkModal = (props) =>{
 				<Modal.Title className="linkModalTitle">Edit Link</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
-				<div className="inputHolder">
-					<label htmlFor="linkText" className="grey-text">Text to display:</label>
-					<input type="text" name="linkText" value={props.linkDetails.text} onChange={(e)=>props.linkContentChange(e,"text")} />
-				</div>
+				{!props.linkDetails.isSelectedText &&
+					<div className="inputHolder">
+						<label htmlFor="linkText" className="grey-text">Text to display:</label>
+						<input type="text" name="linkText" value={props.linkDetails.text} onChange={(e)=>props.linkContentChange(e,"text")} />
+					</div>
+				}
 				<div className="inputHolder">
 					<label htmlFor="linkUrl" className="grey-text">URL to link the text to:</label>
 					<input type="text" name="linkUrl" value={props.linkDetails.url} onChange={(e)=>props.linkContentChange(e,"url")} />
