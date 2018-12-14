@@ -8,6 +8,7 @@ import ReactDOM from 'react-dom';
 import isUrl from 'is-url'
 import FileAttachment from "./FileAttachment";
 import FontSize from "./FontSize";
+import LinkModal from "./LinkModal";
 
 /**
  * A change helper to standardize wrapping links.
@@ -71,7 +72,9 @@ const isCodeHotkey = isKeyHotkey('mod+`')
 class MailEditor extends React.Component{
 	state={
 		value:Value.fromJSON(initialValue),
-		fileDetails:[]
+		fileDetails:[],
+		isLinkModalOpen:false,
+		linkDetails:{text:"",url:""}
 	}
 
 	/**
@@ -129,6 +132,7 @@ class MailEditor extends React.Component{
 					onKeyDown={this.onKeyDown}
 					renderNode={this.renderNode}
 					renderMark={this.renderMark}
+					addLink={this.addLink}
 					schema={schema}
 				/>
 				<div>
@@ -156,10 +160,36 @@ class MailEditor extends React.Component{
 					<div className="fileAttachmentDiv">
 						{this.renderBlockButton('file', 'attach_file')}
 					</div>
-
 				</div>
+				<LinkModal
+					linkDetails={this.state.linkDetails}
+					linkContentChange={this.linkContentChange}
+					toggleLinkModal={this.toggleLinkModal} 
+					addLink={this.addLink}
+					isLinkModalOpen={this.state.isLinkModalOpen}/>
 			</div>
 		)
+	}
+
+	addLink = (e) =>{
+		this.toggleLinkModal()
+		const href = this.state.linkDetails.url
+		if (href === null) {
+			return
+		}
+		const text = this.state.linkDetails.text
+		if (text === null) {
+			return
+		}
+		const {editor}=this
+		this.setState({},()=>{editor
+			.insertText(text)
+			.moveFocusBackward(text.length)
+			.command(wrapLink, href)})
+	}
+
+	linkContentChange=(e,field)=>{
+		this.setState({linkDetails:{...this.state.linkDetails,[field]:e.target.value}})
 	}
 
 	/**
@@ -303,10 +333,18 @@ class MailEditor extends React.Component{
 		} else if (isCodeHotkey(event)) {
 			mark = 'code'
 		} else {
-			return next()
+			try{
+				return next()
+			}catch(err){
+				return editor
+			}
 		}
 		event.preventDefault()
 		editor.toggleMark(mark)
+	}
+
+	toggleLinkModal = () =>{
+		this.setState(prevState => ({isLinkModalOpen: !prevState.isLinkModalOpen}));
 	}
 
 	/**
@@ -347,18 +385,7 @@ class MailEditor extends React.Component{
 				}
 				editor.command(wrapLink, href)
 			} else {
-				const href = window.prompt('Enter the URL of the link:')
-				if (href === null) {
-					return
-				}
-				const text = window.prompt('Enter the text for the link:')
-				if (text === null) {
-					return
-				}
-				editor
-					.insertText(text)
-					.moveFocusBackward(text.length)
-					.command(wrapLink, href)
+				this.toggleLinkModal()
 			}
 		} else if (type !== 'bulleted-list' && type !== 'numbered-list') {
 			const isActive = this.hasBlock(type)

@@ -1,0 +1,56 @@
+.modalBtnDiv{
+	box-shadow: none;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+    margin-right: 0px;
+    padding: 10px;
+}
+
+.inputHolder{
+	margin-top: 5px;
+	margin-bottom: 5px;
+	padding: 5px;
+}
+
+.inputHolder>input{
+
+}
+
+.modalBtnDiv Button{
+	margin-left: 10px;
+	border: none;
+	display: inline-flex;
+	min-width: 80px;
+	align-items: center;
+	justify-content: center;
+	height:36px;
+}
+
+.linkModalTitle{
+	color:black;
+}
+
+.modal {
+  text-align: center;
+  padding: 0!important;
+}
+
+.modal:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+  margin-right: -4px;
+}
+
+.modal-dialog {
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
+  width: 470px;
+}
+
+.grey-text{
+	color: #66676a;
+}
