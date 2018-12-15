@@ -32,30 +32,10 @@ function unwrapLink(editor) {
 }
 
 /**
- * The editor's schema.
- * @type {Object}
- */
-const schema = {
-  document: {
-    
-  },
-  blocks: {
-    image: {
-      isVoid: true,
-    },
-    file:{
-    	isVoid: true
-    }
-  },
-}
-
-
-/**
  * Define the default node type.
  *
  * @type {String}
  */
-
 const DEFAULT_NODE = 'paragraph'
 
 /**
@@ -63,7 +43,6 @@ const DEFAULT_NODE = 'paragraph'
  *
  * @type {Function}
  */
-
 const isBoldHotkey = isKeyHotkey('mod+b')
 const isItalicHotkey = isKeyHotkey('mod+i')
 const isUnderlinedHotkey = isKeyHotkey('mod+u')
@@ -133,7 +112,6 @@ class MailEditor extends React.Component{
 					renderNode={this.renderNode}
 					renderMark={this.renderMark}
 					addLink={this.addLink}
-					schema={schema}
 				/>
 				<div>
 					{this.state.fileDetails.map(
@@ -247,9 +225,9 @@ class MailEditor extends React.Component{
 			{fileDetails: [...this.state.fileDetails,{src:fileSrc,size:file.size,name:file.name}]}
 		);
 	}
+
 	/**
 	 * Render a Slate node.
-	 *
 	 * @param {Object} props
 	 * @return {Element}
 	 */
@@ -262,8 +240,6 @@ class MailEditor extends React.Component{
 				return <ul { ...attributes}>{children}</ul>
 			case 'large-size':
 				return <p style={{fontSize:"large"}} { ...attributes}>{children}</p>
-			case 'normal-size':
-				return <p style={{fontSize:"medium"}} { ...attributes}>{children}</p>
 			case 'small-size':
 				return <p style={{fontSize:"small"}} { ...attributes}>{children}</p>
 			case 'list-item':
@@ -288,7 +264,6 @@ class MailEditor extends React.Component{
 
 	/**
 	 * Render a Slate mark.
-	 *
 	 * @param {Object} props
 	 * @return {Element}
 	 */
@@ -311,7 +286,6 @@ class MailEditor extends React.Component{
 
 	/**
 	 * On change, save the new `value`.
-	 *
 	 * @param {Editor} editor
 	 */
 	onChange = ({value}) => {
@@ -324,7 +298,6 @@ class MailEditor extends React.Component{
 
 	/**
 	 * On key down, if it's a formatting command toggle a mark.
-	 *
 	 * @param {Event} event
 	 * @param {Editor} editor
 	 * @return {Change}
@@ -356,7 +329,6 @@ class MailEditor extends React.Component{
 
 	/**
 	 * When a mark button is clicked, toggle the current mark.
-	 *
 	 * @param {Event} event
 	 * @param {String} type
 	 */
@@ -371,7 +343,6 @@ class MailEditor extends React.Component{
 	 * @param {String} type
 	 */
 	onClickBlock = (event, type) => {
-
 		event.preventDefault();
 		const {editor}=this
 		const {value} = editor
