@@ -123,7 +123,7 @@ class MailEditor extends React.Component{
 					)}
 				</div>
 				<Toolbar>
-					{this.renderBlockButton('font-size', 'format_size')}
+					{this.renderMarkButton('font-size', 'format_size')}
 					{this.renderMarkButton('bold', 'format_bold')}
 					{this.renderMarkButton('italic', 'format_italic')}
 					{this.renderMarkButton('underlined', 'format_underlined')}
@@ -188,7 +188,8 @@ class MailEditor extends React.Component{
 		return(
 			<Button active={isActive}
 					onMouseDown={event=>this.onClickMark(event, type)}>
-				<Icon>{icon}</Icon> 
+				{type==="font-size" && <FontSize hasMark={this.hasMark} onClickMark={this.onClickMark} icon={icon} />}
+				{type!=="font-size" && <Icon>{icon}</Icon>} 
 			</Button>
 		)
 	}
@@ -211,9 +212,8 @@ class MailEditor extends React.Component{
 		return( 
 			<Button active={isActive}
 				onMouseDown={event => this.onClickBlock(event, type)}>
-				{type==="font-size" && <FontSize hasBlock={this.hasBlock} onClickBlock={this.onClickBlock} icon={icon} />}
 				{type==='file' && <input id="fileInput" ref="fileInput" onChange={(e)=>this.addFile(e)} type="file" style={{display:"none"}} />}
-				{type!=="font-size" && <Icon>{icon}</Icon>}
+				<Icon>{icon}</Icon>
 			</Button>
 		)
 	}
@@ -238,10 +238,6 @@ class MailEditor extends React.Component{
 				return <blockquote { ...attributes} >{children}</blockquote>
 			case 'bulleted-list':
 				return <ul { ...attributes}>{children}</ul>
-			case 'large-size':
-				return <p style={{fontSize:"large"}} { ...attributes}>{children}</p>
-			case 'small-size':
-				return <p style={{fontSize:"small"}} { ...attributes}>{children}</p>
 			case 'list-item':
 				return <li { ...attributes}>{children}</li>
 			case 'numbered-list':
@@ -269,7 +265,6 @@ class MailEditor extends React.Component{
 	 */
 	renderMark = (props, editor, next) => {
 		const {children,mark,attributes}=props
-
 		switch (mark.type) {
 			case 'bold':
 				return <strong { ...attributes}>{children}</strong>
@@ -279,6 +274,10 @@ class MailEditor extends React.Component{
 				return <em { ...attributes}>{children}</em>
 			case 'underlined':
 				return <u { ...attributes}>{children}</u>
+			case 'small-size':
+				return <font size="1" {...attributes}>{children}</font>
+			case 'large-size':
+				return <font size="4" {...attributes}>{children}</font>
 			default:
 				return next()
 		}
@@ -334,6 +333,25 @@ class MailEditor extends React.Component{
 	 */
 	onClickMark = (event, type) => {
 		event.preventDefault()
+		if(type==="small-size"){
+			if(this.hasMark("normal-size")){
+				this.editor.toggleMark("normal-size")		
+			} else if(this.hasMark("large-size")){
+				this.editor.toggleMark("large-size")		
+			}
+		} else if(type==="normal-size"){
+			if(this.hasMark("small-size")){
+				this.editor.toggleMark("small-size")		
+			} else if(this.hasMark("large-size")){
+				this.editor.toggleMark("large-size")		
+			}
+		} else if(type==="large-size"){
+			if(this.hasMark("small-size")){
+				this.editor.toggleMark("small-size")		
+			} else if(this.hasMark("normal-size")){
+				this.editor.toggleMark("normal-size")		
+			}
+		}
 		this.editor.toggleMark(type)
 	}
 
@@ -350,8 +368,6 @@ class MailEditor extends React.Component{
 
 		if(type==="file"){
 			ReactDOM.findDOMNode(this.refs.fileInput).click()
-		} else if(type==="font-size"){
-			//does nothing
 		} else if(type==='link'){
 			const hasLinks = this.hasLinks()
 			if (hasLinks) {
