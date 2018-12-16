@@ -1,6 +1,19 @@
 import React from 'react';
 import styled from '@emotion/styled';
 
+
+/**
+ * A styled image block component.
+ *
+ * @type {Component}
+ */
+/*export const Image = styled('img')`
+  display: block;
+  max-width: 100%;
+  max-height: 20em;
+  box-shadow: ${props => (props.selected ? '0 0 0 2px blue;' : 'none')};
+`
+*/
 export const Button = styled('span')`
   cursor: pointer;
   color: ${props =>

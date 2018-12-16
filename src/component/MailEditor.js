@@ -9,6 +9,42 @@ import isUrl from 'is-url'
 import FileAttachment from "./FileAttachment";
 import FontSize from "./FontSize";
 import LinkModal from "./LinkModal";
+import styled from '@emotion/styled';
+
+const Image = styled('img')`
+  display: block;
+  max-width: 100%;
+  max-height: 20em;
+  box-shadow: ${props => (props.selected ? '0 0 0 2px blue;' : 'none')};
+`
+
+/**
+ * The editor's schema.
+ * @type {Object}
+ */
+const schema = {
+	blocks: {
+		image: {
+			isVoid: true,
+		},
+	},
+}
+
+/**
+ * A change function to standardize inserting images.
+ * @param {Editor} editor
+ * @param {String} src
+ * @param {Range} target
+ */
+function insertImage(editor, src, target) {
+	if (target) {
+		editor.select(target)
+	}
+	editor.insertBlock({
+		type: 'image',
+		data: { src },
+	})
+}
 
 /**
  * A change helper to standardize wrapping links.
@@ -112,6 +148,7 @@ class MailEditor extends React.Component{
 					renderNode={this.renderNode}
 					renderMark={this.renderMark}
 					addLink={this.addLink}
+					schema={schema}
 				/>
 				<div>
 					{this.state.fileDetails.map(
@@ -132,6 +169,7 @@ class MailEditor extends React.Component{
 					{this.renderBlockButton('numbered-list', 'format_list_numbered')}
 					{this.renderBlockButton('bulleted-list', 'format_list_bulleted')}
 					{this.renderBlockButton('link', 'link')}
+					{this.renderBlockButton('image', 'insert_photo')}
 				</Toolbar>
 				<div className="footerDiv">
 					<button className="sendButton" type="button">Send</button>
@@ -232,7 +270,7 @@ class MailEditor extends React.Component{
 	 * @return {Element}
 	 */
 	renderNode = (props, editor, next) => {
-		const {attributes,children,node}=props
+		const {attributes,children,node,isFocused}=props
 		switch (node.type) {
 			case 'block-quote':
 				return <blockquote { ...attributes} >{children}</blockquote>
@@ -247,6 +285,9 @@ class MailEditor extends React.Component{
 				const href = data.get('href')
 				return <a className="textLink" {...attributes} href={href}>{children}</a>
 			}
+			case 'image': 
+				const src = node.data.get('src')
+				return <Image src={src} selected={isFocused} {...attributes} />
 			default:
 				return next()
 		}
@@ -368,6 +409,10 @@ class MailEditor extends React.Component{
 
 		if(type==="file"){
 			ReactDOM.findDOMNode(this.refs.fileInput).click()
+		} else if(type==="image"){
+			const src = window.prompt('Enter the URL of the image:')
+			if (!src) return
+			editor.command(insertImage, src)
 		} else if(type==='link'){
 			const hasLinks = this.hasLinks()
 			if (hasLinks) {
