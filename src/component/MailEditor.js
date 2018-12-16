@@ -2,21 +2,14 @@ import React from "react";
 import {Editor,getEventTransfer} from "slate-react";
 import {Value} from "slate";
 import { isKeyHotkey } from 'is-hotkey';
-import { Button, Icon, Toolbar } from './Components';
+import { Button, Icon, Toolbar, Image } from './Components';
 import initialValue from './value.json';
 import ReactDOM from 'react-dom';
 import isUrl from 'is-url'
 import FileAttachment from "./FileAttachment";
 import FontSize from "./FontSize";
 import LinkModal from "./LinkModal";
-import styled from '@emotion/styled';
-
-const Image = styled('img')`
-  display: block;
-  max-width: 100%;
-  max-height: 20em;
-  box-shadow: ${props => (props.selected ? '0 0 0 2px blue;' : 'none')};
-`
+import ImageModal from "./ImageModal";
 
 /**
  * The editor's schema.
@@ -86,10 +79,12 @@ const isCodeHotkey = isKeyHotkey('mod+`')
 
 class MailEditor extends React.Component{
 	state={
+		imageUrl:"",
 		value:Value.fromJSON(initialValue),
 		fileDetails:[],
 		isLinkModalOpen:false,
-		linkDetails:{text:"",url:"",isSelectedText:false}
+		linkDetails:{text:"",url:"",isSelectedText:false},
+		isImageModalOpen:false
 	}
 
 	/**
@@ -177,6 +172,12 @@ class MailEditor extends React.Component{
 						{this.renderBlockButton('file', 'attach_file')}
 					</div>
 				</div>
+				<ImageModal 
+					imageUrl={this.imageUrl}
+					addImage={this.addImage}
+					imageUrlChange={this.imageUrlChange}
+					toggleImageModal={this.toggleImageModal} 
+					isImageModalOpen={this.state.isImageModalOpen}/>
 				<LinkModal 
 					linkDetails={this.state.linkDetails}
 					linkContentChange={this.linkContentChange}
@@ -213,6 +214,18 @@ class MailEditor extends React.Component{
 
 	linkContentChange=(e,field)=>{
 		this.setState({linkDetails:{...this.state.linkDetails,[field]:e.target.value}})
+	}
+
+	imageUrlChange=(e)=>{
+		this.setState({imageUrl:e.target.value})
+	}
+
+	addImage=(e)=>{
+		this.toggleImageModal()
+		const {editor} = this
+		const src = this.state.imageUrl
+		if (!src) return
+		this.setState({imageUrl:""},()=>{editor.command(insertImage, src)})
 	}
 
 	/**
@@ -367,6 +380,10 @@ class MailEditor extends React.Component{
 		this.setState(prevState => ({isLinkModalOpen: !prevState.isLinkModalOpen}));
 	}
 
+	toggleImageModal = () =>{
+		this.setState(prevState => ({isImageModalOpen: !prevState.isImageModalOpen}));
+	}
+
 	/**
 	 * When a mark button is clicked, toggle the current mark.
 	 * @param {Event} event
@@ -410,9 +427,10 @@ class MailEditor extends React.Component{
 		if(type==="file"){
 			ReactDOM.findDOMNode(this.refs.fileInput).click()
 		} else if(type==="image"){
-			const src = window.prompt('Enter the URL of the image:')
+			this.toggleImageModal()
+			/*const src = window.prompt('Enter the URL of the image:')
 			if (!src) return
-			editor.command(insertImage, src)
+			editor.command(insertImage, src)*/
 		} else if(type==='link'){
 			const hasLinks = this.hasLinks()
 			if (hasLinks) {
