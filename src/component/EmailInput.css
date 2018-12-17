@@ -1,0 +1,35 @@
+.email-addr-style{
+	background-color: #fff;
+	border: 1px solid #dadce0;
+	border-radius: 15px;
+	padding-left: 8px;
+	padding-right: 4px;
+	padding-top: 1px;
+	line-height: 15px;
+	height: 20px;
+	display: inline-flex;
+	cursor: pointer;
+	margin: 2px 5px 0 0;
+}
+
+.email-addr{
+	text-overflow: ellipsis;
+	overflow: hidden;
+	max-width: 325px;
+	color:#5f6268;
+}
+
+.close-button{
+	height: 16px;
+	opacity: .54;
+	width: 16px;
+	margin-left: 4px;
+}
+
+.close-button>i{
+	font-size: 0.1px;
+}
+
+.close-button:hover{
+	opacity: .87;
+}

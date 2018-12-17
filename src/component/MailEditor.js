@@ -10,6 +10,7 @@ import FileAttachment from "./FileAttachment";
 import FontSize from "./FontSize";
 import LinkModal from "./LinkModal";
 import ImageModal from "./ImageModal";
+import EmailInput from "./EmailInput";
 
 /**
  * The editor's schema.
@@ -79,6 +80,8 @@ const isCodeHotkey = isKeyHotkey('mod+`')
 
 class MailEditor extends React.Component{
 	state={
+		toAddrFieldVal:"",
+		toAddr:[],
 		imageUrl:"",
 		value:Value.fromJSON(initialValue),
 		fileDetails:[],
@@ -123,36 +126,39 @@ class MailEditor extends React.Component{
 	render(){
 		return(
 			<div>
-				<div className="emailAddr">
-					<span className="toAddr">To</span>
-					<input type="text"/>
-				</div>
+				<EmailInput 
+					addToAddr={this.addToAddr}
+					onToAddrChange={this.onToAddrChange}
+					toAddr={this.state.toAddr} 
+					toAddrFieldVal={this.state.toAddrFieldVal} />
 				
 				<div className="subjectDiv">
 					<input type="text" placeholder="Subject" />
 				</div>
-				
-				<Editor
-					spellCheck
-					autoFocus
-					ref={this.ref}
-					value={this.state.value}
-					onPaste={this.onPaste}
-					onChange={this.onChange}
-					onKeyDown={this.onKeyDown}
-					renderNode={this.renderNode}
-					renderMark={this.renderMark}
-					addLink={this.addLink}
-					schema={schema}
-				/>
-				<div>
-					{this.state.fileDetails.map(
-						(fileDetail,index)=> <FileAttachment key={fileDetail.name+"_"+index}
-										removeAttachment={this.removeAttachment} 
-										src={fileDetail.src} 
-										filename={fileDetail.name} 
-										fileSize={fileDetail.size} />					
-					)}
+				<div className="mail-editor-container">
+					<Editor
+						className="mail-editor"
+						spellCheck
+						autoFocus
+						ref={this.ref}
+						value={this.state.value}
+						onPaste={this.onPaste}
+						onChange={this.onChange}
+						onKeyDown={this.onKeyDown}
+						renderNode={this.renderNode}
+						renderMark={this.renderMark}
+						addLink={this.addLink}
+						schema={schema}
+					/>
+					<div>
+						{this.state.fileDetails.map(
+							(fileDetail,index)=> <FileAttachment key={fileDetail.name+"_"+index}
+											removeAttachment={this.removeAttachment} 
+											src={fileDetail.src} 
+											filename={fileDetail.name} 
+											fileSize={fileDetail.size} />					
+						)}
+					</div>
 				</div>
 				<Toolbar>
 					{this.renderMarkButton('font-size', 'format_size')}
@@ -186,6 +192,17 @@ class MailEditor extends React.Component{
 					isLinkModalOpen={this.state.isLinkModalOpen}/>
 			</div>
 		)
+	}
+
+	onToAddrChange=(e)=>{
+		this.setState({toAddrFieldVal:e.target.value})
+	}
+
+	addToAddr=(e)=>{
+		if(e.key==='Enter'){
+			let email=this.state.toAddrFieldVal;
+			this.setState({toAddr:[...this.state.toAddr,email],toAddrFieldVal:""})
+		}
 	}
 
 	addLink = (e) =>{
