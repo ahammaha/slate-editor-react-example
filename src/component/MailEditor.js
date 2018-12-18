@@ -11,6 +11,7 @@ import FontSize from "./FontSize";
 import {LinkModal,ImageModal} from "./ModalDialogs";
 import EmailInput from "./EmailInput";
 import "./MailEditor.css";
+import {Button as BootstrapButton} from "react-bootstrap";
 
 /**
  * The editor's schema.
@@ -153,6 +154,12 @@ class MailEditor extends React.Component{
 						schema={schema}
 					/>
 					<div className="file-attachment-container">
+						{this.state.fileDetails.length>0 && 
+							<div>
+								Invoice Attachments
+								({this.state.fileDetails.length})
+							</div>
+						}
 						{this.state.fileDetails.map(
 							(fileDetail,index)=> <FileAttachment key={fileDetail.name+"_"+index}
 												removeAttachment={this.removeAttachment} 
@@ -175,10 +182,14 @@ class MailEditor extends React.Component{
 					{this.renderBlockButton('image', 'insert_photo')}
 				</Toolbar>
 				<div className="footerDiv">
-					<button className="sendButton" type="button">Send</button>
-					<div className="fileAttachmentDiv">
-						{this.renderBlockButton('file', 'attach_file')}
+					<div className="fileAttachmentIconDiv">
+						{this.renderBlockButton('file', 'attachment')}
+						<span onMouseDown={event => this.onClickBlock(event, "file")} 
+							className="attachInvoiceLabel">
+							Attach Invoices
+						</span>
 					</div>
+					<BootstrapButton className="sendButton">SEND</BootstrapButton>
 				</div>
 				<ImageModal 
 					imageUrl={this.imageUrl}
