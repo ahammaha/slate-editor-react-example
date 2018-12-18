@@ -13,10 +13,6 @@
 	padding: 5px;
 }
 
-.inputHolder>input{
-
-}
-
 .modalBtnDiv Button{
 	margin-left: 10px;
 	border: none;
@@ -48,9 +44,20 @@
   display: inline-block;
   text-align: left;
   vertical-align: middle;
-  width: 470px;
+}
+
+.linkModalDialog{
+  width: 480px;
+}
+
+.imageModalDialog {
+  width: 600px;
 }
 
 .grey-text{
 	color: #66676a;
+}
+
+.imgInputHolder>input{
+  width: 60%;
 }

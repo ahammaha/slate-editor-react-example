@@ -8,9 +8,9 @@ import ReactDOM from 'react-dom';
 import isUrl from 'is-url'
 import FileAttachment from "./FileAttachment";
 import FontSize from "./FontSize";
-import LinkModal from "./LinkModal";
-import ImageModal from "./ImageModal";
+import {LinkModal,ImageModal} from "./ModalDialogs";
 import EmailInput from "./EmailInput";
+import "./MailEditor.css";
 
 /**
  * The editor's schema.
@@ -196,6 +196,7 @@ class MailEditor extends React.Component{
 		)
 	}
 
+	/*remove email*/
 	removeEmail=(email,type)=>{
 		let fieldName=type;
 		this.setState({[fieldName]: this.state[fieldName].filter(function(val) { 
@@ -203,10 +204,12 @@ class MailEditor extends React.Component{
 		})});
 	}
 
+	/*on change method for email input*/
 	onToAddrChange=(e)=>{
 		this.setState({toAddrFieldVal:e.target.value})
 	}
 
+	/*key press method for email input*/
 	addToAddr=(e)=>{
 		if(e.key==='Enter'){
 			let email=this.state.toAddrFieldVal;
@@ -214,6 +217,7 @@ class MailEditor extends React.Component{
 		}
 	}
 
+	/*insert text as link to editor*/
 	addLink = (e) =>{
 		this.toggleLinkModal()
 		const {editor}=this
@@ -238,14 +242,17 @@ class MailEditor extends React.Component{
 		}
 	}
 
+	/*change method for link modal input fields*/
 	linkContentChange=(e,field)=>{
 		this.setState({linkDetails:{...this.state.linkDetails,[field]:e.target.value}})
 	}
 
+	/*change method for image url in modal*/
 	imageUrlChange=(e)=>{
 		this.setState({imageUrl:e.target.value})
 	}
 
+	/*add image in the editor*/
 	addImage=(e)=>{
 		this.toggleImageModal()
 		const {editor} = this
@@ -295,6 +302,7 @@ class MailEditor extends React.Component{
 		)
 	}
 
+	/*append new file details to the state*/
 	addFile = (e) => {
 		let file = e.target.files[0];
 		if(!file)
@@ -334,6 +342,7 @@ class MailEditor extends React.Component{
 		}
 	}
 
+	/*remove file details from the state*/
 	removeAttachment = (src) =>{
 		this.setState(prevState => ({
 			fileDetails: prevState.fileDetails.filter(fileDetail => fileDetail.src !== src )
@@ -404,10 +413,12 @@ class MailEditor extends React.Component{
 		editor.toggleMark(mark)
 	}
 
+	/*to show or hide modal to get details to insert link*/
 	toggleLinkModal = () =>{
 		this.setState(prevState => ({isLinkModalOpen: !prevState.isLinkModalOpen}));
 	}
 
+	/*to show or hide modal to get details to insert image*/
 	toggleImageModal = () =>{
 		this.setState(prevState => ({isImageModalOpen: !prevState.isImageModalOpen}));
 	}

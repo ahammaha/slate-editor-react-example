@@ -33,3 +33,24 @@
 .close-button:hover{
 	opacity: .87;
 }
+
+.emailAddrInput{
+	padding: 10px;
+	min-width: 40%;
+	max-width: 90%;
+	height: 20px;
+	line-height: 20px;
+	border: none transparent;
+	outline: none;
+	cursor: text;
+}
+
+.email-input-container{
+	width:100%;
+	cursor:text
+}
+
+.emailAddrLabel{
+	margin-right: 10px;
+	color:#8e8e8e;
+}

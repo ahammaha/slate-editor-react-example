@@ -1,4 +1,5 @@
 import React from 'react';
+import "./FileAttachment.css";
 
 class FileAttachment extends React.Component{
 	componentDidMount() {
@@ -10,7 +11,10 @@ class FileAttachment extends React.Component{
 				<a readOnly className="file-attachment" href={this.props.src}>
 					<span className="filename">{this.props.filename}</span>
 					<span className="grey-text">({this.props.fileSize})</span>
-					<span className="remove-attachment" onClick={()=>this.props.removeAttachment(this.props.src)}></span>
+					<span className="remove-attachment" 
+							onClick={()=>this.props.removeAttachment(this.props.src)}>
+						<i class="material-icons">close</i>
+					</span>
 				</a>
 			</div>
 		)

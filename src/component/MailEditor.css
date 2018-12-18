@@ -1,0 +1,81 @@
+.subjectDiv>input{
+	border: none transparent;
+	outline: none;
+	cursor: text;
+}
+
+.subjectDiv>input{
+	width: 100%;
+}
+
+.subjectDiv{
+	padding-top: 10px;
+	padding-bottom: 10px;
+	margin-bottom: 20px;
+	border-top: 2px solid #eee;
+	border-bottom: 2px solid #eee;
+}
+
+.fileAttachmentDiv{
+	display: inline-block;
+	padding: 1px 18px 17px;
+}
+
+/* for active toolbar icon */
+.css-1gr0jds{
+	border-radius: 2px;
+	line-height: 20px;
+	background-color: rgba(32,33,36,0.122);
+}
+
+.font-size-dropdown,.font-size-dropdown:hover{
+	padding: 0px !important;
+	border: none;
+	color: #747474 !important;
+	background-color: #fff !important;
+	box-shadow: none !important;
+	-webkit-box-shadow:none !important;
+	margin-bottom:4px;
+}
+
+.font-size-dropdown>.dropdown-menu{
+	box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.2);
+}
+
+/*css for link added in editor*/
+.textLink{
+	text-decoration: underline !important;
+	color: #15c;
+}
+
+/*css for link added in editor*/
+.textLink:hover{
+	color:#15c;
+}
+
+.sendButton{
+	box-shadow: 0 1px 2px 0 rgba(26,115,232,0.451), 0 1px 3px 1px rgba(26,115,232,0.302);
+	display: inline-block;
+	cursor: pointer;
+	max-width: 104px;
+	min-width: 72px;
+	font-size: .875rem;
+	border-radius: 4px;
+	font-weight: 550;
+	letter-spacing:0.25px;
+	height: 36px;
+	padding: 0 16px;
+	background-color: #1a73e8;
+	color: #fff;
+	border: none;
+}
+
+.sendButton:hover{
+	box-shadow: 0 1px 2px 0 rgba(26,115,232,0,451), 0 1px 3px 1px rgba(26,115,232,0,302);
+	background-color: #297be6;
+	border: none;
+}
+
+.footerDiv{
+	margin-top: 20px;
+}
