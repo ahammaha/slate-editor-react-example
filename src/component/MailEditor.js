@@ -127,6 +127,8 @@ class MailEditor extends React.Component{
 		return(
 			<div>
 				<EmailInput 
+					removeEmail={this.removeEmail}
+					type="toAddr"
 					addToAddr={this.addToAddr}
 					onToAddrChange={this.onToAddrChange}
 					toAddr={this.state.toAddr} 
@@ -150,13 +152,13 @@ class MailEditor extends React.Component{
 						addLink={this.addLink}
 						schema={schema}
 					/>
-					<div>
+					<div className="file-attachment-container">
 						{this.state.fileDetails.map(
 							(fileDetail,index)=> <FileAttachment key={fileDetail.name+"_"+index}
-											removeAttachment={this.removeAttachment} 
-											src={fileDetail.src} 
-											filename={fileDetail.name} 
-											fileSize={fileDetail.size} />					
+												removeAttachment={this.removeAttachment} 
+												src={fileDetail.src} 
+												filename={fileDetail.name} 
+												fileSize={fileDetail.size} />					
 						)}
 					</div>
 				</div>
@@ -192,6 +194,13 @@ class MailEditor extends React.Component{
 					isLinkModalOpen={this.state.isLinkModalOpen}/>
 			</div>
 		)
+	}
+
+	removeEmail=(email,type)=>{
+		let fieldName=type;
+		this.setState({[fieldName]: this.state[fieldName].filter(function(val) { 
+			return email!==val
+		})});
 	}
 
 	onToAddrChange=(e)=>{
@@ -288,6 +297,8 @@ class MailEditor extends React.Component{
 
 	addFile = (e) => {
 		let file = e.target.files[0];
+		if(!file)
+			return
 		let fileSrc=e.target.value;
 		this.setState(
 			{fileDetails: [...this.state.fileDetails,{src:fileSrc,size:file.size,name:file.name}]}

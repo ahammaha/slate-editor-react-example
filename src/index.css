@@ -74,10 +74,34 @@ body {
     max-width: 448px;
 }
 
+.file-attachment-container{
+
+}
+
 .grey-text{
 	color: #777;
 	display:inline-block;
 	padding: 3px 0;
+	margin-left: 5px;
+	margin-bottom: 1px;
+}
+
+.filename{
+	padding: 3px 0;
+	vertical-align:bottom;
+	max-width: 315px;
+	display: inline-block;
+	overflow: hidden;
+	text-overflow:ellipsis;
+	white-space:nowrap;
+}
+
+.filename:hover{
+	color: #15c;
+}
+
+.filename{
+	color: #15c;
 }
 
 .remove-attachment{
@@ -85,6 +109,7 @@ body {
     cursor: pointer;
     float: right;
     height: 16px;
+    display: inline-block;
     margin-top: 3px;
     opacity: .5;
     width: 16px;
