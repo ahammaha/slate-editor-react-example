@@ -33,6 +33,14 @@
   border-right: none !important;
   border-left: none !important;
   border-radius: 0px !important;
-  border-bottom: 1px solid #9b9b9b !important;
+  border-bottom: none !important;
+  /*border-bottom: 1px solid #9b9b9b !important;*/
   box-shadow: none !important;
+  padding: 0px;
+}
+
+.template-dropdown-container{
+  display: inline-block;
+  position: absolute;
+  right: 100px;
 }

@@ -4,29 +4,28 @@ import {Modal, Button, MenuItem, DropdownButton} from "react-bootstrap";
 import "./App.css";
 
 // import all templates 
-import blankTemplate from "./templates/BlankTemplate.json";
-import template1 from './templates/Template1.json';
-import template2 from './templates/Template2.json';
+import {EMPTY_TEMPLATE,WEEKLY_REPORT,SUMMARY_TEMPLATE} from "./templates/htmlTemplates.js";
 
 class App extends Component {
 	state={
 		isEmailEditorOpen:false,
-		initialValue:blankTemplate,
+		initialValue:EMPTY_TEMPLATE,
 		currentTemplate:"Empty Template",
-		templates:["Empty Template","Template1","Template2"]
+		templates:["Empty Template","Weekly Report","Summary Template"]
 	}
 	selectTemplate=(e,template)=>{
-		console.log(template)
 		this.setState({currentTemplate:template})
 		switch(template){
 			case "Empty Template":
-				this.setState({initialValue:blankTemplate})
+				this.setState({initialValue:EMPTY_TEMPLATE})
 				return;
-			case "Template1":
-				this.setState({initialValue:template1})
+			case "Weekly Report":
+				this.setState({initialValue:WEEKLY_REPORT})
 				return;
-			case "Template2":
-				this.setState({initialValue:template2})
+			case "Summary Template":
+				this.setState({initialValue:SUMMARY_TEMPLATE})
+				return;
+			default:
 				return;
 		}
 	}
@@ -41,18 +40,18 @@ class App extends Component {
 					<Modal.Header closeButton>
 						<Modal.Title className="email-modal-title">
 							SEND SUMMARY MAIL
-							<DropdownButton className="template-dropdown" id="template-dropdown" title={this.state.currentTemplate}>
-								{this.state.templates.map((templateName, index) =>
-									(
-										<MenuItem key={index}
+							<div className="template-dropdown-container">
+								<DropdownButton className="template-dropdown" id="template-dropdown" title={this.state.currentTemplate}>
+									{this.state.templates.map((templateName, index) =>
+										(<MenuItem key={index}
 											active={this.state.currentTemplate===templateName}
 											eventKey={index} 
 											onMouseDown={event => (this.selectTemplate(event,templateName))}>
 											{templateName}
-										</MenuItem>
-										)
+										</MenuItem>)
 									)}
-							</DropdownButton>
+								</DropdownButton>
+							</div>
 						</Modal.Title>
 					</Modal.Header>
 					<Modal.Body>

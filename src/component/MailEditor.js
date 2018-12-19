@@ -1,9 +1,8 @@
 import React from "react";
 import {Editor,getEventTransfer} from "slate-react";
-import {Value} from "slate";
+//import {Value} from "slate";
 import { isKeyHotkey } from 'is-hotkey';
 import { Button, Icon, Toolbar, Image } from './Components';
-//import initialValue from './value.json';
 import ReactDOM from 'react-dom';
 import isUrl from 'is-url'
 import FileAttachment from "./FileAttachment";
@@ -12,6 +11,160 @@ import {LinkModal,ImageModal} from "./ModalDialogs";
 import EmailInput from "./EmailInput";
 import "./MailEditor.css";
 import {Button as BootstrapButton} from "react-bootstrap";
+import Html from 'slate-html-serializer'
+
+/**
+ * Tags to blocks.
+ * @type {Object}
+ */
+const BLOCK_TAGS = {
+  p: 'paragraph',
+  li: 'list-item',
+  ul: 'bulleted-list',
+  ol: 'numbered-list',
+  blockquote: 'quote',
+  pre: 'code',
+  h1: 'heading-one',
+  h2: 'heading-two',
+  h3: 'heading-three',
+  h4: 'heading-four',
+  h5: 'heading-five',
+  h6: 'heading-six',
+}
+
+
+/**
+ * Tags to marks.
+ * @type {Object}
+ */
+const MARK_TAGS = {
+  strong: 'bold',
+  em: 'italic',
+  u: 'underlined',
+  s: 'strikethrough',
+  code: 'code',
+}
+
+const RULES = [
+  {
+    deserialize(el, next) {
+      const block = BLOCK_TAGS[el.tagName.toLowerCase()]
+
+      if (block) {
+        return {
+          object: 'block',
+          type: block,
+          nodes: next(el.childNodes),
+        }
+      }
+    },
+    serialize(obj, children) {
+      if (obj.object === 'block') {
+        switch (obj.type) {
+          case 'code':
+            return (
+              <pre>
+                <code>{children}</code>
+              </pre>
+            )
+          case 'paragraph':
+            return <p className={obj.data.get('className')}>{children}</p>
+          case 'quote':
+            return <blockquote>{children}</blockquote>
+          case 'image':
+          	const src = obj.data.get('src')
+			return <Image src={src} />
+        }
+      } else if(obj.object==="inline"){
+      	if(obj.type==="link"){
+      		const { data } = obj
+			const href = data.get('href')
+			return <a className="textLink" href={href}>{children}</a>
+      	}
+      }
+  	}
+  },
+  {
+    deserialize(el, next) {
+      const mark = MARK_TAGS[el.tagName.toLowerCase()]
+
+      if (mark) {
+        return {
+          object: 'mark',
+          type: mark,
+          nodes: next(el.childNodes),
+        }
+      }
+    },
+    serialize(obj, children) {
+      if (obj.object === 'mark') {
+        switch (obj.type) {
+          case 'bold':
+            return <strong>{children}</strong>
+          case 'italic':
+            return <em>{children}</em>
+          case 'underlined':
+            return <u>{children}</u>
+        }
+      }
+    },
+  },
+  {
+    // Special case for code blocks, which need to grab the nested childNodes.
+    deserialize(el, next) {
+      if (el.tagName.toLowerCase() === 'pre') {
+        const code = el.childNodes[0]
+        const childNodes =
+          code && code.tagName.toLowerCase() === 'code'
+            ? code.childNodes
+            : el.childNodes
+
+        return {
+          object: 'block',
+          type: 'code',
+          nodes: next(childNodes),
+        }
+      }
+    },
+  },
+  {
+    // Special case for images, to grab their src.
+    deserialize(el, next) {
+      if (el.tagName.toLowerCase() === 'img') {
+        return {
+          object: 'block',
+          type: 'image',
+          nodes: next(el.childNodes),
+          data: {
+            src: el.getAttribute('src'),
+          },
+        }
+      }
+    },
+  },
+  {
+    // Special case for links, to grab their href.
+    deserialize(el, next) {
+      if (el.tagName.toLowerCase() === 'a') {
+        return {
+          object: 'inline',
+          type: 'link',
+          nodes: next(el.childNodes),
+          data: {
+            href: el.getAttribute('href'),
+          },
+        }
+      }
+    },
+  },
+]
+
+/**
+ * Create a new HTML serializer with `RULES`.
+ * @type {Html}
+ */
+
+const html = new Html({ rules: RULES })
 
 /**
  * The editor's schema.
@@ -82,7 +235,8 @@ const isCodeHotkey = isKeyHotkey('mod+`')
 class MailEditor extends React.Component{
 	componentWillReceiveProps(nextProps){
 		if (this.props.initialValue !== nextProps.initialValue) {
-			this.setState({value:Value.fromJSON(nextProps.initialValue)});
+			//this.setState({value:Value.fromJSON(nextProps.initialValue)});
+			this.setState({value:html.deserialize(nextProps.initialValue)})
 		}
 	}
 
@@ -90,18 +244,18 @@ class MailEditor extends React.Component{
 		toAddrFieldVal:"",
 		toAddr:[],
 		imageUrl:"",
-		value:Value.fromJSON(this.props.initialValue),
+		value:html.deserialize(this.props.initialValue),
 		fileDetails:[
-			{src:"filesrc",size:"$12M",name:"37892437289"},
-			{src:"filesrc",size:"$12M",name:"37892437289"},
-			{src:"filesrc",size:"$12M",name:"37892437289"},
-			{src:"filesrc",size:"$12M",name:"37892437289"},
-			{src:"filesrc",size:"$12M",name:"37892437289"},
-			{src:"filesrc",size:"$12M",name:"37892437289"},
-			{src:"filesrc",size:"$12M",name:"37892437289"},
-			{src:"filesrc",size:"$12M",name:"37892437289"},
-			{src:"filesrc",size:"$12M",name:"37892437289"},
-			{src:"filesrc",size:"$12M",name:"37892437289"}
+			{src:"C:\fakepath\filesrc1",size:"$12M",name:"378924372891"},
+			{src:"C:\fakepath\filesrc2",size:"$12M",name:"378924372892"},
+			{src:"C:\fakepath\filesrc3",size:"$12M",name:"378924372893"},
+			{src:"C:\fakepath\filesrc4",size:"$12M",name:"378924372894"},
+			{src:"C:\fakepath\filesrc5",size:"$12M",name:"378924372895"},
+			{src:"C:\fakepath\filesrc6",size:"$12M",name:"378924372896"},
+			{src:"C:\fakepath\filesrc7",size:"$12M",name:"378924372897"},
+			{src:"C:\fakepath\filesrc8",size:"$12M",name:"378924372898"},
+			{src:"C:\fakepath\filesrc9",size:"$12M",name:"378924372899"},
+			{src:"C:\fakepath\filesrc10",size:"$12M",name:"3789243728910"}
 		],
 		isLinkModalOpen:false,
 		linkDetails:{text:"",url:"",isSelectedText:false},
@@ -409,8 +563,14 @@ class MailEditor extends React.Component{
 	 */
 	onChange = ({value}) => {
 		if (value.document !== this.state.value.document) {
-			const content = JSON.stringify(value.toJSON())
-			localStorage.setItem('content', content)
+			//const content = JSON.stringify(value.toJSON())
+			try{
+				const content=html.serialize(value)
+				localStorage.setItem('content', content)
+			}catch(e){
+
+			}
+			
 		}
 		this.setState({value})
 	}
@@ -496,9 +656,6 @@ class MailEditor extends React.Component{
 			ReactDOM.findDOMNode(this.refs.fileInput).click()
 		} else if(type==="image"){
 			this.toggleImageModal()
-			/*const src = window.prompt('Enter the URL of the image:')
-			if (!src) return
-			editor.command(insertImage, src)*/
 		} else if(type==='link'){
 			const hasLinks = this.hasLinks()
 			if (hasLinks) {
