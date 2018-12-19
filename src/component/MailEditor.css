@@ -16,6 +16,14 @@
 	border-bottom: 2px solid #eee;
 }
 
+.file-count-label{
+	margin-bottom: 10px;
+}
+
+.file-attachment-container{
+	margin-top: 20px;
+}
+
 .fileAttachmentIconDiv{
 	cursor: pointer;
 	display: inline-block;

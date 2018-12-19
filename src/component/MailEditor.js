@@ -3,7 +3,7 @@ import {Editor,getEventTransfer} from "slate-react";
 import {Value} from "slate";
 import { isKeyHotkey } from 'is-hotkey';
 import { Button, Icon, Toolbar, Image } from './Components';
-import initialValue from './value.json';
+//import initialValue from './value.json';
 import ReactDOM from 'react-dom';
 import isUrl from 'is-url'
 import FileAttachment from "./FileAttachment";
@@ -80,12 +80,29 @@ const isUnderlinedHotkey = isKeyHotkey('mod+u')
 const isCodeHotkey = isKeyHotkey('mod+`')
 
 class MailEditor extends React.Component{
+	componentWillReceiveProps(nextProps){
+		if (this.props.initialValue !== nextProps.initialValue) {
+			this.setState({value:Value.fromJSON(nextProps.initialValue)});
+		}
+	}
+
 	state={
 		toAddrFieldVal:"",
 		toAddr:[],
 		imageUrl:"",
-		value:Value.fromJSON(initialValue),
-		fileDetails:[],
+		value:Value.fromJSON(this.props.initialValue),
+		fileDetails:[
+			{src:"filesrc",size:"$12M",name:"37892437289"},
+			{src:"filesrc",size:"$12M",name:"37892437289"},
+			{src:"filesrc",size:"$12M",name:"37892437289"},
+			{src:"filesrc",size:"$12M",name:"37892437289"},
+			{src:"filesrc",size:"$12M",name:"37892437289"},
+			{src:"filesrc",size:"$12M",name:"37892437289"},
+			{src:"filesrc",size:"$12M",name:"37892437289"},
+			{src:"filesrc",size:"$12M",name:"37892437289"},
+			{src:"filesrc",size:"$12M",name:"37892437289"},
+			{src:"filesrc",size:"$12M",name:"37892437289"}
+		],
 		isLinkModalOpen:false,
 		linkDetails:{text:"",url:"",isSelectedText:false},
 		isImageModalOpen:false
@@ -155,17 +172,18 @@ class MailEditor extends React.Component{
 					/>
 					<div className="file-attachment-container">
 						{this.state.fileDetails.length>0 && 
-							<div>
+							<div className="file-count-label">
 								Invoice Attachments
 								({this.state.fileDetails.length})
 							</div>
 						}
 						{this.state.fileDetails.map(
-							(fileDetail,index)=> <FileAttachment key={fileDetail.name+"_"+index}
-												removeAttachment={this.removeAttachment} 
-												src={fileDetail.src} 
-												filename={fileDetail.name} 
-												fileSize={fileDetail.size} />					
+							(fileDetail,index)=> <FileAttachment 
+													key={fileDetail.name+"_"+index}
+													removeAttachment={this.removeAttachment} 
+													src={fileDetail.src} 
+													filename={fileDetail.name} 
+													fileSize={fileDetail.size} />					
 						)}
 					</div>
 				</div>

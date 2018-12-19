@@ -1,5 +1,5 @@
 .emailModalDialog .modal-header{
-  background-color: black !important;
+  background-color: #363636 !important;
   color: white !important;
 }
 
@@ -24,4 +24,15 @@
 .mail-editor-container{
   height: 500px;
   overflow-y:scroll;
+}
+
+.template-dropdown,.template-dropdown:hover,.template-dropdown:active{
+  color:#9b9b9b !important;
+  background-color: #363636 !important;
+  border-top: none !important;
+  border-right: none !important;
+  border-left: none !important;
+  border-radius: 0px !important;
+  border-bottom: 1px solid #9b9b9b !important;
+  box-shadow: none !important;
 }
