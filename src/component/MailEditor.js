@@ -1,6 +1,5 @@
 import React from "react";
 import {Editor,getEventTransfer} from "slate-react";
-//import {Value} from "slate";
 import { isKeyHotkey } from 'is-hotkey';
 import { Button, Icon, Toolbar, Image } from './Components';
 import ReactDOM from 'react-dom';
@@ -11,172 +10,15 @@ import {LinkModal,ImageModal} from "./ModalDialogs";
 import EmailInput from "./EmailInput";
 import "./MailEditor.css";
 import {Button as BootstrapButton} from "react-bootstrap";
-import Html from 'slate-html-serializer'
-
-/**
- * Tags to blocks.
- * @type {Object}
- */
-const BLOCK_TAGS = {
-  p: 'paragraph',
-  li: 'list-item',
-  ul: 'bulleted-list',
-  ol: 'numbered-list',
-  blockquote: 'quote',
-  pre: 'code',
-  h1: 'heading-one',
-  h2: 'heading-two',
-  h3: 'heading-three',
-  h4: 'heading-four',
-  h5: 'heading-five',
-  h6: 'heading-six',
-}
-
-
-/**
- * Tags to marks.
- * @type {Object}
- */
-const MARK_TAGS = {
-  strong: 'bold',
-  em: 'italic',
-  u: 'underlined',
-  s: 'strikethrough',
-  code: 'code',
-}
-
-const RULES = [
-  {
-    deserialize(el, next) {
-      const block = BLOCK_TAGS[el.tagName.toLowerCase()]
-
-      if (block) {
-        return {
-          object: 'block',
-          type: block,
-          nodes: next(el.childNodes),
-        }
-      }
-    },
-    serialize(obj, children) {
-      if (obj.object === 'block') {
-        switch (obj.type) {
-          case 'code':
-            return (
-              <pre>
-                <code>{children}</code>
-              </pre>
-            )
-          case 'paragraph':
-            return <p className={obj.data.get('className')}>{children}</p>
-          case 'quote':
-            return <blockquote>{children}</blockquote>
-          case 'image':
-          	const src = obj.data.get('src')
-			return <Image src={src} />
-        }
-      } else if(obj.object==="inline"){
-      	if(obj.type==="link"){
-      		const { data } = obj
-			const href = data.get('href')
-			return <a className="textLink" href={href}>{children}</a>
-      	}
-      }
-  	}
-  },
-  {
-    deserialize(el, next) {
-      const mark = MARK_TAGS[el.tagName.toLowerCase()]
-
-      if (mark) {
-        return {
-          object: 'mark',
-          type: mark,
-          nodes: next(el.childNodes),
-        }
-      }
-    },
-    serialize(obj, children) {
-      if (obj.object === 'mark') {
-        switch (obj.type) {
-          case 'bold':
-            return <strong>{children}</strong>
-          case 'italic':
-            return <em>{children}</em>
-          case 'underlined':
-            return <u>{children}</u>
-        }
-      }
-    },
-  },
-  {
-    // Special case for code blocks, which need to grab the nested childNodes.
-    deserialize(el, next) {
-      if (el.tagName.toLowerCase() === 'pre') {
-        const code = el.childNodes[0]
-        const childNodes =
-          code && code.tagName.toLowerCase() === 'code'
-            ? code.childNodes
-            : el.childNodes
-
-        return {
-          object: 'block',
-          type: 'code',
-          nodes: next(childNodes),
-        }
-      }
-    },
-  },
-  {
-    // Special case for images, to grab their src.
-    deserialize(el, next) {
-      if (el.tagName.toLowerCase() === 'img') {
-        return {
-          object: 'block',
-          type: 'image',
-          nodes: next(el.childNodes),
-          data: {
-            src: el.getAttribute('src'),
-          },
-        }
-      }
-    },
-  },
-  {
-    // Special case for links, to grab their href.
-    deserialize(el, next) {
-      if (el.tagName.toLowerCase() === 'a') {
-        return {
-          object: 'inline',
-          type: 'link',
-          nodes: next(el.childNodes),
-          data: {
-            href: el.getAttribute('href'),
-          },
-        }
-      }
-    },
-  },
-]
+import Html from 'slate-html-serializer';
+import {Rules} from "../config/Rules";
+import {Schema} from "../config/Schema";
 
 /**
  * Create a new HTML serializer with `RULES`.
  * @type {Html}
  */
-
-const html = new Html({ rules: RULES })
-
-/**
- * The editor's schema.
- * @type {Object}
- */
-const schema = {
-	blocks: {
-		image: {
-			isVoid: true,
-		},
-	},
-}
+const html = new Html({ rules: Rules })
 
 /**
  * A change function to standardize inserting images.
@@ -322,7 +164,7 @@ class MailEditor extends React.Component{
 						renderNode={this.renderNode}
 						renderMark={this.renderMark}
 						addLink={this.addLink}
-						schema={schema}
+						schema={Schema}
 					/>
 					<div className="file-attachment-container">
 						{this.state.fileDetails.length>0 && 
@@ -549,9 +391,9 @@ class MailEditor extends React.Component{
 			case 'underlined':
 				return <u { ...attributes}>{children}</u>
 			case 'small-size':
-				return <font size="1" {...attributes}>{children}</font>
+				return <font size='1' {...attributes}>{children}</font>
 			case 'large-size':
-				return <font size="4" {...attributes}>{children}</font>
+				return <font size='4' {...attributes}>{children}</font>
 			default:
 				return next()
 		}
@@ -564,13 +406,8 @@ class MailEditor extends React.Component{
 	onChange = ({value}) => {
 		if (value.document !== this.state.value.document) {
 			//const content = JSON.stringify(value.toJSON())
-			try{
-				const content=html.serialize(value)
-				localStorage.setItem('content', content)
-			}catch(e){
-
-			}
-			
+			const content=html.serialize(value)
+			localStorage.setItem('content', content)
 		}
 		this.setState({value})
 	}
@@ -619,7 +456,9 @@ class MailEditor extends React.Component{
 	 */
 	onClickMark = (event, type) => {
 		event.preventDefault()
-		if(type==="small-size"){
+		if(type==="font-size"){
+			return
+		}else if(type==="small-size"){
 			if(this.hasMark("normal-size")){
 				this.editor.toggleMark("normal-size")		
 			} else if(this.hasMark("large-size")){

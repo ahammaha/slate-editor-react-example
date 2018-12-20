@@ -13,6 +13,14 @@
 	padding: 5px;
 }
 
+.inputHolder>label,.inputHolder>input{
+  display: inline-block;
+}
+
+.inputHolder>label,.imgInputHolder>label{
+  margin-right: 5px;
+}
+
 .modalBtnDiv Button{
 	margin-left: 10px;
 	border: none;
@@ -60,4 +68,8 @@
 
 .imgInputHolder>input{
   width: 60%;
+}
+
+.imgInputHolder>input,.imgInputHolder>label{
+  display: inline-block;
 }
