@@ -32,8 +32,8 @@ class App extends Component {
 	render() {
 		return (
 			<div className="App">
-		        <Button bsStyle="primary" onClick={this.toggleModal}>Compose Email</Button>
-		        <Modal dialogClassName="emailModalDialog"
+				<Button bsStyle="primary" onClick={this.toggleModal}>Compose Email</Button>
+				<Modal dialogClassName="emailModalDialog"
 					show={this.state.isEmailEditorOpen}
 					onHide={this.toggleModal}
 					backdrop="static">

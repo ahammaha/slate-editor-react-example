@@ -5,6 +5,7 @@
 	padding-left: 8px;
 	padding-right: 4px;
 	padding-top: 1px;
+	/*padding: 1px 4px 0px 8px;*/
 	line-height: 15px;
 	height: 20px;
 	display: inline-flex;
@@ -39,8 +40,7 @@
 	min-width: 40%;
 	max-width: 90%;
 	height: 20px;
-	line-height: 20px;
-	border: none transparent;
+	border: none;
 	outline: none;
 	cursor: text;
 }

@@ -15,12 +15,12 @@ class EmailInput extends React.Component{
 										<span key={index}>
 										<span className="email-addr-style" key={email}>
 										<span className="email-addr">{email}</span>
-						         		<span className="close-button" 
+										<span className="close-button" 
 											onClick={()=>this.props.removeEmail(email,this.props.type)}>
-											<i class="material-icons">close</i>
+											<i className="material-icons">close</i>
 										</span>
-	         							</span>{/*" "*/}
-	         							</span>
+										</span>{/*" "*/}
+										</span>
 									)
 								})}
 								<input ref={(ip) => this.myInp = ip}

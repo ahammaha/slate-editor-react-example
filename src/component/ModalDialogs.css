@@ -1,24 +1,23 @@
 .modalBtnDiv{
 	box-shadow: none;
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: flex-start;
-    margin-right: 0px;
-    padding: 10px;
+	display: flex;
+	flex-direction: row-reverse;
+	justify-content: flex-start;
+	margin-right: 0px;
+	padding: 10px;
 }
 
 .inputHolder{
-	margin-top: 5px;
-	margin-bottom: 5px;
+	margin: 5px 0;
 	padding: 5px;
 }
 
-.inputHolder>label,.inputHolder>input{
-  display: inline-block;
+.inputHolder>label,.inputHolder>input,.imgInputHolder>input,.imgInputHolder>label{
+	display: inline-block;
 }
 
 .inputHolder>label,.imgInputHolder>label{
-  margin-right: 5px;
+	margin-right: 5px;
 }
 
 .modalBtnDiv Button{
@@ -36,30 +35,30 @@
 }
 
 .modal {
-  text-align: center;
-  padding: 0!important;
+	text-align: center;
+	padding: 0!important;
 }
 
 .modal:before {
-  content: '';
-  display: inline-block;
-  height: 100%;
-  vertical-align: middle;
-  margin-right: -4px;
+	content: '';
+	display: inline-block;
+	height: 100%;
+	vertical-align: middle;
+	margin-right: -4px;
 }
 
 .modal-dialog {
-  display: inline-block;
-  text-align: left;
-  vertical-align: middle;
+	display: inline-block;
+	text-align: left;
+	vertical-align: middle;
 }
 
 .linkModalDialog{
-  width: 480px;
+	width: 480px;
 }
 
 .imageModalDialog {
-  width: 600px;
+	width: 600px;
 }
 
 .grey-text{
@@ -67,9 +66,5 @@
 }
 
 .imgInputHolder>input{
-  width: 60%;
-}
-
-.imgInputHolder>input,.imgInputHolder>label{
-  display: inline-block;
+	width: 60%;
 }

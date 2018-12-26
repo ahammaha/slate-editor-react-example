@@ -1,19 +1,15 @@
 import React from "react";
 import {Editor,getEventTransfer} from "slate-react";
 import { isKeyHotkey } from 'is-hotkey';
-import { Button, Icon, Toolbar, Image } from './Components';
 import ReactDOM from 'react-dom';
 import isUrl from 'is-url'
-import FileAttachment from "./FileAttachment";
-import FontSize from "./FontSize";
-import {LinkModal,ImageModal} from "./ModalDialogs";
-import EmailInput from "./EmailInput";
 import "./MailEditor.css";
 import {Button as BootstrapButton} from "react-bootstrap";
 import Html from 'slate-html-serializer';
-import {Rules} from "../config/Rules";
-import {Schema} from "../config/Schema";
-
+import {Rules,Schema} from "../config/EditorConfig";
+import {FileAttachment, FontSize, Button, Icon, 
+		Toolbar, Image, LinkModal, ImageModal, EmailInput} from "./index";
+		
 /**
  * Create a new HTML serializer with `RULES`.
  * @type {Html}
@@ -59,14 +55,12 @@ function unwrapLink(editor) {
 
 /**
  * Define the default node type.
- *
  * @type {String}
  */
 const DEFAULT_NODE = 'paragraph'
 
 /**
  * Define hotkey matchers.
- *
  * @type {Function}
  */
 const isBoldHotkey = isKeyHotkey('mod+b')
@@ -77,12 +71,12 @@ const isCodeHotkey = isKeyHotkey('mod+`')
 class MailEditor extends React.Component{
 	componentWillReceiveProps(nextProps){
 		if (this.props.initialValue !== nextProps.initialValue) {
-			//this.setState({value:Value.fromJSON(nextProps.initialValue)});
 			this.setState({value:html.deserialize(nextProps.initialValue)})
 		}
 	}
 
 	state={
+		subject:"",
 		toAddrFieldVal:"",
 		toAddr:[],
 		imageUrl:"",
@@ -108,7 +102,6 @@ class MailEditor extends React.Component{
 	* Check whether the current selection has a link in it.
 	* @return {Boolean} hasLinks
 	*/
-
 	hasLinks = () => {
 		const { value } = this.state
 		return value.inlines.some(inline => inline.type === 'link')
@@ -149,7 +142,7 @@ class MailEditor extends React.Component{
 					toAddrFieldVal={this.state.toAddrFieldVal} />
 				
 				<div className="subjectDiv">
-					<input type="text" placeholder="Subject" />
+					<input type="text" value={this.subject} onChange={this.onSubjectChange} placeholder="Subject" />
 				</div>
 				<div className="mail-editor-container">
 					<Editor
@@ -203,7 +196,7 @@ class MailEditor extends React.Component{
 							Attach Invoices
 						</span>
 					</div>
-					<BootstrapButton className="sendButton">SEND</BootstrapButton>
+					<BootstrapButton className="sendButton" onClick={this.sendMail}>SEND</BootstrapButton>
 				</div>
 				<ImageModal 
 					imageUrl={this.imageUrl}
@@ -221,12 +214,24 @@ class MailEditor extends React.Component{
 		)
 	}
 
+	/* onclick method for send button */
+	sendMail=()=>{
+		console.log(this.state.toAddr)
+		console.log(this.state.subject)
+		console.log(html.serialize(this.state.value))
+	}
+
 	/*remove email*/
 	removeEmail=(email,type)=>{
 		let fieldName=type;
 		this.setState({[fieldName]: this.state[fieldName].filter(function(val) { 
 			return email!==val
 		})});
+	}
+
+	/*on change method for subject input*/
+	onSubjectChange=(e)=>{
+		this.setState({subject:e.target.value})
 	}
 
 	/*on change method for email input*/
