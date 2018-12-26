@@ -1,0 +1,70 @@
+.modalBtnDiv{
+	box-shadow: none;
+	display: flex;
+	flex-direction: row-reverse;
+	justify-content: flex-start;
+	margin-right: 0px;
+	padding: 10px;
+}
+
+.inputHolder{
+	margin: 5px 0;
+	padding: 5px;
+}
+
+.inputHolder>label,.inputHolder>input,.imgInputHolder>input,.imgInputHolder>label{
+	display: inline-block;
+}
+
+.inputHolder>label,.imgInputHolder>label{
+	margin-right: 5px;
+}
+
+.modalBtnDiv Button{
+	margin-left: 10px;
+	border: none;
+	display: inline-flex;
+	min-width: 80px;
+	align-items: center;
+	justify-content: center;
+	height:36px;
+}
+
+.linkModalTitle{
+	color:black;
+}
+
+.modal {
+	text-align: center;
+	padding: 0!important;
+}
+
+.modal:before {
+	content: '';
+	display: inline-block;
+	height: 100%;
+	vertical-align: middle;
+	margin-right: -4px;
+}
+
+.modal-dialog {
+	display: inline-block;
+	text-align: left;
+	vertical-align: middle;
+}
+
+.linkModalDialog{
+	width: 480px;
+}
+
+.imageModalDialog {
+	width: 600px;
+}
+
+.grey-text{
+	color: #66676a;
+}
+
+.imgInputHolder>input{
+	width: 60%;
+}

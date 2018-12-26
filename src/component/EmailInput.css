@@ -1,0 +1,56 @@
+.email-addr-style{
+	background-color: #fff;
+	border: 1px solid #dadce0;
+	border-radius: 15px;
+	padding-left: 8px;
+	padding-right: 4px;
+	padding-top: 1px;
+	/*padding: 1px 4px 0px 8px;*/
+	line-height: 15px;
+	height: 20px;
+	display: inline-flex;
+	cursor: pointer;
+	margin: 2px 5px 0 0;
+}
+
+.email-addr{
+	text-overflow: ellipsis;
+	overflow: hidden;
+	max-width: 325px;
+	color:#5f6268;
+}
+
+.close-button{
+	height: 16px;
+	opacity: .54;
+	width: 16px;
+	margin-left: 4px;
+}
+
+.close-button>i{
+	font-size: 0.1px;
+}
+
+.close-button:hover{
+	opacity: .87;
+}
+
+.emailAddrInput{
+	padding: 10px;
+	min-width: 40%;
+	max-width: 90%;
+	height: 20px;
+	border: none;
+	outline: none;
+	cursor: text;
+}
+
+.email-input-container{
+	width:100%;
+	cursor:text
+}
+
+.emailAddrLabel{
+	margin-right: 10px;
+	color:#8e8e8e;
+}

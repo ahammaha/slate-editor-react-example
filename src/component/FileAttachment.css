@@ -1,0 +1,46 @@
+.file-attachment,.file-attachment:hover{
+	text-decoration: none;
+	color: black;
+}
+
+.file-attachment-div{
+	display: inline-block;
+	width:400px;
+	border: 1px solid #bbb;
+	margin: 4px 5px 4px 5px;
+	background-color: #eee;
+	padding: 10px;
+}
+
+.filename{
+	display: block;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.grey-text{
+	display: block;
+}
+
+.file-details{
+	display: inline-block;
+	width:350px;
+	padding: 5px;
+}
+
+.remove-attachment{
+	display: inline-block;
+	vertical-align: top;
+	margin-top: 20px;
+}
+
+.remove-attachment>.material-icons{
+	display: inline-block;
+	color: grey;
+	font-size: 5px;
+}
+
+.invoiceAmount{
+	font-size: 22px;
+}
